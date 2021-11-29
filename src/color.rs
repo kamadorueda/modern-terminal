@@ -14,7 +14,7 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, String> {
+    pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
                 space: Space::Bits2,
@@ -28,7 +28,7 @@ impl Color {
             } => match code {
                 0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
                 8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
-                16..=255 => Err(format!("4 bits space cannot hold code: {}", code)),
+                16..=255 => Err(self),
             },
 
             Color {
@@ -43,11 +43,11 @@ impl Color {
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
 
-            _ => Err(String::from("Invalid color")),
+            _ => Err(self),
         }
     }
 
-    pub fn new(color: &str) -> Result<Color, String> {
+    pub fn new(color: &str) -> Result<Color, &str> {
         let original = color;
         let color = original.trim().to_lowercase();
 
@@ -98,7 +98,7 @@ impl Color {
             }
         }
 
-        Err(format!("Invalid color: {}", original))
+        Err(original)
     }
 }
 
@@ -115,6 +115,7 @@ mod tests {
             space: Space::Bits2,
         };
         assert_eq!(Color::new("default"), Ok(color));
+
         assert_eq!(color.sgr(false), Ok(vec![49]));
         assert_eq!(color.sgr(true), Ok(vec![39]));
     }
@@ -127,6 +128,7 @@ mod tests {
             space: Space::Bits4,
         };
         assert_eq!(Color::new("black"), Ok(color));
+
         assert_eq!(color.sgr(false), Ok(vec![40]));
         assert_eq!(color.sgr(true), Ok(vec![30]));
     }
@@ -139,6 +141,7 @@ mod tests {
             space: Space::Bits4,
         };
         assert_eq!(Color::new("bright_black"), Ok(color));
+
         assert_eq!(color.sgr(false), Ok(vec![100]));
         assert_eq!(color.sgr(true), Ok(vec![90]));
     }
@@ -151,6 +154,7 @@ mod tests {
             space: Space::Bits8,
         };
         assert_eq!(Color::new("grey0"), Ok(color));
+
         assert_eq!(color.sgr(false), Ok(vec![48, 5, 16]));
         assert_eq!(color.sgr(true), Ok(vec![38, 5, 16]));
     }
@@ -163,6 +167,7 @@ mod tests {
             space: Space::Bits24,
         };
         assert_eq!(Color::new("#ff8000"), Ok(color));
+
         assert_eq!(color.sgr(false), Ok(vec![48, 2, 255, 128, 0]));
         assert_eq!(color.sgr(true), Ok(vec![38, 2, 255, 128, 0]));
     }
