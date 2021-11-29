@@ -14,39 +14,6 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
-        match self {
-            Color {
-                space: Space::Bits2,
-                ..
-            } => Ok(vec![if foreground { 39 } else { 49 }]),
-
-            Color {
-                code: Some(code),
-                space: Space::Bits4,
-                ..
-            } => match code {
-                0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
-                8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
-                16..=255 => Err(self),
-            },
-
-            Color {
-                code: Some(code),
-                space: Space::Bits8,
-                ..
-            } => Ok(vec![if foreground { 38 } else { 48 }, 5, *code]),
-
-            Color {
-                rgb: Some((r, g, b)),
-                space: Space::Bits24,
-                ..
-            } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
-
-            _ => Err(self),
-        }
-    }
-
     pub fn new(color: &str) -> Result<Color, &str> {
         let original = color;
         let color = original.trim().to_lowercase();
@@ -99,6 +66,39 @@ impl Color {
         }
 
         Err(original)
+    }
+
+    pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
+        match self {
+            Color {
+                space: Space::Bits2,
+                ..
+            } => Ok(vec![if foreground { 39 } else { 49 }]),
+
+            Color {
+                code: Some(code),
+                space: Space::Bits4,
+                ..
+            } => match code {
+                0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
+                8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
+                16..=255 => Err(self),
+            },
+
+            Color {
+                code: Some(code),
+                space: Space::Bits8,
+                ..
+            } => Ok(vec![if foreground { 38 } else { 48 }, 5, *code]),
+
+            Color {
+                rgb: Some((r, g, b)),
+                space: Space::Bits24,
+                ..
+            } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
+
+            _ => Err(self),
+        }
     }
 }
 
