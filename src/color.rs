@@ -24,19 +24,19 @@ impl Color {
             });
         }
 
-        if let Some(number) = Color::name_to_number(&color) {
-            return match number {
+        if let Some(code) = Color::name_to_code(&color) {
+            return match code {
                 0..=7 => Ok(Color {
                     space: Space::Bits4,
-                    sgr: vec![number + if foreground { 30 } else { 40 }],
+                    sgr: vec![code + if foreground { 30 } else { 40 }],
                 }),
                 8..=15 => Ok(Color {
                     space: Space::Bits4,
-                    sgr: vec![number + if foreground { 82 } else { 92 }],
+                    sgr: vec![code + if foreground { 82 } else { 92 }],
                 }),
                 _ => Ok(Color {
                     space: Space::Bits8,
-                    sgr: vec![if foreground { 38 } else { 48 }, 5, number],
+                    sgr: vec![if foreground { 38 } else { 48 }, 5, code],
                 }),
             };
         }
@@ -61,8 +61,8 @@ impl Color {
         Err(String::from(format!("Invalid color: {}", original)))
     }
 
-    fn name_to_number(color: &str) -> Option<u8> {
-        match color {
+    fn name_to_code(name: &str) -> Option<u8> {
+        match name {
             "black" => Some(0),
             "red" => Some(1),
             "green" => Some(2),
