@@ -8,8 +8,10 @@ pub enum Space {
 
 #[derive(Debug, PartialEq)]
 pub struct Color {
+    code: Option<u8>,
+    foreground: bool,
+    rgb: Option<(u8, u8, u8)>,
     space: Space,
-    sgr: Vec<u8>,
 }
 
 impl Color {
@@ -19,24 +21,32 @@ impl Color {
 
         if color == "default" {
             return Ok(Color {
+                code: None,
+                foreground,
+                rgb: None,
                 space: Space::Bits2,
-                sgr: vec![if foreground { 39 } else { 49 }],
             });
         }
 
         if let Some(code) = Color::name_to_code(&color) {
             return match code {
                 0..=7 => Ok(Color {
+                    code: Some(code),
+                    foreground,
+                    rgb: None,
                     space: Space::Bits4,
-                    sgr: vec![code + if foreground { 30 } else { 40 }],
                 }),
                 8..=15 => Ok(Color {
+                    code: Some(code),
+                    foreground,
+                    rgb: None,
                     space: Space::Bits4,
-                    sgr: vec![code + if foreground { 82 } else { 92 }],
                 }),
                 _ => Ok(Color {
+                    code: Some(code),
+                    foreground,
+                    rgb: None,
                     space: Space::Bits8,
-                    sgr: vec![if foreground { 38 } else { 48 }, 5, code],
                 }),
             };
         }
@@ -53,8 +63,10 @@ impl Color {
                 let blue = u8::from_str_radix(&capture[3], *radix).unwrap();
 
                 return Ok(Color {
+                    code: None,
+                    foreground,
+                    rgb: Some((red, green, blue)),
                     space: Space::Bits24,
-                    sgr: vec![if foreground { 38 } else { 48 }, 2, red, green, blue],
                 });
             }
         }
@@ -281,75 +293,95 @@ mod tests {
         assert_eq!(
             Color::new("default", false),
             Ok(Color {
+                code: None,
+                foreground: false,
+                rgb: None,
                 space: Space::Bits2,
-                sgr: vec![49],
             })
         );
         assert_eq!(
             Color::new("default", true),
             Ok(Color {
+                code: None,
+                foreground: true,
+                rgb: None,
                 space: Space::Bits2,
-                sgr: vec![39],
             })
         );
 
         assert_eq!(
             Color::new("black", false),
             Ok(Color {
+                code: Some(0),
+                foreground: false,
+                rgb: None,
                 space: Space::Bits4,
-                sgr: vec![40],
             })
         );
         assert_eq!(
             Color::new("black", true),
             Ok(Color {
+                code: Some(0),
+                foreground: true,
+                rgb: None,
                 space: Space::Bits4,
-                sgr: vec![30],
             })
         );
 
         assert_eq!(
             Color::new("bright_black", true),
             Ok(Color {
+                code: Some(8),
+                foreground: true,
+                rgb: None,
                 space: Space::Bits4,
-                sgr: vec![90],
             })
         );
         assert_eq!(
             Color::new("bright_black", false),
             Ok(Color {
+                code: Some(8),
+                foreground: false,
+                rgb: None,
                 space: Space::Bits4,
-                sgr: vec![100],
             })
         );
 
         assert_eq!(
             Color::new("grey0", true),
             Ok(Color {
+                code: Some(16),
+                foreground: true,
+                rgb: None,
                 space: Space::Bits8,
-                sgr: vec![38, 5, 16],
             })
         );
         assert_eq!(
             Color::new("grey0", false),
             Ok(Color {
+                code: Some(16),
+                foreground: false,
+                rgb: None,
                 space: Space::Bits8,
-                sgr: vec![48, 5, 16],
             })
         );
 
         assert_eq!(
             Color::new("#ff8000", true),
             Ok(Color {
+                code: None,
+                foreground: true,
+                rgb: Some((255, 128, 0)),
                 space: Space::Bits24,
-                sgr: vec![38, 2, 255, 128, 0],
             })
         );
         assert_eq!(
             Color::new("rgb(255, 128, 0)", false),
             Ok(Color {
+                code: None,
+                foreground: false,
+                rgb: Some((255, 128, 0)),
                 space: Space::Bits24,
-                sgr: vec![48, 2, 255, 128, 0],
             })
         );
     }
