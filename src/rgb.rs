@@ -8,6 +8,9 @@ impl RGB {
     pub fn hex(&self) -> String {
         format!("#{:0>2X}{:0>2X}{:0>2X}", self.red, self.green, self.blue)
     }
+    pub fn rgb(&self) -> String {
+        format!("rgb({}, {}, {})", self.red, self.green, self.blue)
+    }
 }
 
 #[cfg(test)]
@@ -22,5 +25,14 @@ mod tests {
             blue: 0,
         };
         assert_eq!(rgb.hex(), "#FF8000");
+    }
+    #[test]
+    fn rgb_rgb() {
+        let rgb = RGB {
+            red: 255,
+            green: 128,
+            blue: 0,
+        };
+        assert_eq!(rgb.rgb(), "rgb(255, 128, 0)");
     }
 }
