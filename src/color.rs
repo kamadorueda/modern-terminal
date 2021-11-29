@@ -41,6 +41,23 @@ impl Color {
             };
         }
 
+        for (radix, regex) in &[
+            // #ff00ff
+            (16, "^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$"),
+            // rgb(255, 0, 255)
+            (10, r"^rgb\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*\)$"),
+        ] {
+            for capture in regex::Regex::new(regex).unwrap().captures_iter(&color) {
+                let red = u8::from_str_radix(&capture[1], *radix).unwrap();
+                let green = u8::from_str_radix(&capture[2], *radix).unwrap();
+                let blue = u8::from_str_radix(&capture[3], *radix).unwrap();
+
+                return Ok(Color {
+                    space: Space::Bits24,
+                    sgr: vec![if foreground { 38 } else { 48 }, 2, red, green, blue],
+                });
+            }
+        }
         Err(String::from(format!("Invalid color: {}", original)))
     }
 
@@ -262,10 +279,77 @@ mod tests {
     #[test]
     fn new() {
         assert_eq!(
+            Color::new("default", false),
+            Ok(Color {
+                space: Space::Bits2,
+                sgr: vec![49],
+            })
+        );
+        assert_eq!(
             Color::new("default", true),
             Ok(Color {
                 space: Space::Bits2,
                 sgr: vec![39],
+            })
+        );
+
+        assert_eq!(
+            Color::new("black", false),
+            Ok(Color {
+                space: Space::Bits4,
+                sgr: vec![40],
+            })
+        );
+        assert_eq!(
+            Color::new("black", true),
+            Ok(Color {
+                space: Space::Bits4,
+                sgr: vec![30],
+            })
+        );
+
+        assert_eq!(
+            Color::new("bright_black", true),
+            Ok(Color {
+                space: Space::Bits4,
+                sgr: vec![90],
+            })
+        );
+        assert_eq!(
+            Color::new("bright_black", false),
+            Ok(Color {
+                space: Space::Bits4,
+                sgr: vec![100],
+            })
+        );
+
+        assert_eq!(
+            Color::new("grey0", true),
+            Ok(Color {
+                space: Space::Bits8,
+                sgr: vec![38, 5, 16],
+            })
+        );
+        assert_eq!(
+            Color::new("grey0", false),
+            Ok(Color {
+                space: Space::Bits8,
+                sgr: vec![48, 5, 16],
+            })
+        );
+
+        assert_eq!(
+            Color::new("#ff8000", true),
+            Ok(Color {
+                space: Space::Bits24,
+                sgr: vec![38, 2, 255, 128, 0],
+            })
+        );
+        assert_eq!(
+            Color::new("rgb(255, 128, 0)", false),
+            Ok(Color {
+                space: Space::Bits24,
+                sgr: vec![48, 2, 255, 128, 0],
             })
         );
     }
