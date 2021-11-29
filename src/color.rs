@@ -70,7 +70,8 @@ impl Color {
                 });
             }
         }
-        Err(String::from(format!("Invalid color: {}", original)))
+
+        Err(format!("Invalid color: {}", original))
     }
 
     fn name_to_code(name: &str) -> Option<u8> {
@@ -289,100 +290,97 @@ mod tests {
     use super::Space;
 
     #[test]
-    fn new() {
-        assert_eq!(
-            Color::new("default", false),
-            Ok(Color {
-                code: None,
-                foreground: false,
-                rgb: None,
-                space: Space::Bits2,
-            })
-        );
-        assert_eq!(
-            Color::new("default", true),
-            Ok(Color {
-                code: None,
-                foreground: true,
-                rgb: None,
-                space: Space::Bits2,
-            })
-        );
+    fn new_default() {
+        let color = Color {
+            code: None,
+            foreground: false,
+            rgb: None,
+            space: Space::Bits2,
+        };
+        assert_eq!(Color::new("default", false), Ok(color));
 
-        assert_eq!(
-            Color::new("black", false),
-            Ok(Color {
-                code: Some(0),
-                foreground: false,
-                rgb: None,
-                space: Space::Bits4,
-            })
-        );
-        assert_eq!(
-            Color::new("black", true),
-            Ok(Color {
-                code: Some(0),
-                foreground: true,
-                rgb: None,
-                space: Space::Bits4,
-            })
-        );
+        let color = Color {
+            code: None,
+            foreground: true,
+            rgb: None,
+            space: Space::Bits2,
+        };
+        assert_eq!(Color::new("default", true), Ok(color));
+    }
 
-        assert_eq!(
-            Color::new("bright_black", true),
-            Ok(Color {
-                code: Some(8),
-                foreground: true,
-                rgb: None,
-                space: Space::Bits4,
-            })
-        );
-        assert_eq!(
-            Color::new("bright_black", false),
-            Ok(Color {
-                code: Some(8),
-                foreground: false,
-                rgb: None,
-                space: Space::Bits4,
-            })
-        );
+    #[test]
+    fn new_black() {
+        let color = Color {
+            code: Some(0),
+            foreground: false,
+            rgb: None,
+            space: Space::Bits4,
+        };
+        assert_eq!(Color::new("black", false), Ok(color));
 
-        assert_eq!(
-            Color::new("grey0", true),
-            Ok(Color {
-                code: Some(16),
-                foreground: true,
-                rgb: None,
-                space: Space::Bits8,
-            })
-        );
-        assert_eq!(
-            Color::new("grey0", false),
-            Ok(Color {
-                code: Some(16),
-                foreground: false,
-                rgb: None,
-                space: Space::Bits8,
-            })
-        );
+        let color = Color {
+            code: Some(0),
+            foreground: true,
+            rgb: None,
+            space: Space::Bits4,
+        };
+        assert_eq!(Color::new("black", true), Ok(color));
+    }
 
-        assert_eq!(
-            Color::new("#ff8000", true),
-            Ok(Color {
-                code: None,
-                foreground: true,
-                rgb: Some((255, 128, 0)),
-                space: Space::Bits24,
-            })
-        );
-        assert_eq!(
-            Color::new("rgb(255, 128, 0)", false),
-            Ok(Color {
-                code: None,
-                foreground: false,
-                rgb: Some((255, 128, 0)),
-                space: Space::Bits24,
-            })
-        );
+    #[test]
+    fn new_bright_black() {
+        let color = Color {
+            code: Some(8),
+            foreground: false,
+            rgb: None,
+            space: Space::Bits4,
+        };
+        assert_eq!(Color::new("bright_black", false), Ok(color));
+
+        let color = Color {
+            code: Some(8),
+            foreground: true,
+            rgb: None,
+            space: Space::Bits4,
+        };
+        assert_eq!(Color::new("bright_black", true), Ok(color));
+    }
+
+    #[test]
+    fn new_grey0() {
+        let color = Color {
+            code: Some(16),
+            foreground: false,
+            rgb: None,
+            space: Space::Bits8,
+        };
+        assert_eq!(Color::new("grey0", false), Ok(color));
+
+        let color = Color {
+            code: Some(16),
+            foreground: true,
+            rgb: None,
+            space: Space::Bits8,
+        };
+        assert_eq!(Color::new("grey0", true), Ok(color));
+    }
+
+    #[test]
+    fn new_rgb() {
+        let color = Color {
+            code: None,
+            foreground: false,
+            rgb: Some((255, 128, 0)),
+            space: Space::Bits24,
+        };
+        assert_eq!(Color::new("#ff8000", false), Ok(color));
+
+        let color = Color {
+            code: None,
+            foreground: true,
+            rgb: Some((255, 128, 0)),
+            space: Space::Bits24,
+        };
+        assert_eq!(Color::new("rgb(255, 128, 0)", true), Ok(color));
     }
 }
