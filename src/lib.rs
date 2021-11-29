@@ -1,1 +1,1 @@
-pub mod rgb;
+pub mod color_triplet;

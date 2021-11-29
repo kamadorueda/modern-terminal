@@ -1,10 +1,10 @@
-pub struct RGB {
+pub struct ColorTriplet {
     red: u8,
     green: u8,
     blue: u8,
 }
 
-impl RGB {
+impl ColorTriplet {
     pub fn hex(&self) -> String {
         format!("#{:0>2X}{:0>2X}{:0>2X}", self.red, self.green, self.blue)
     }
@@ -25,30 +25,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn rgb_hex() {
-        let rgb = RGB {
+    fn hex() {
+        let color = ColorTriplet {
             red: 255,
             green: 128,
             blue: 0,
         };
-        assert_eq!(rgb.hex(), "#FF8000");
+        assert_eq!(color.hex(), "#FF8000");
     }
     #[test]
-    fn rgb_normalized() {
-        let rgb = RGB {
+    fn normalized() {
+        let color = ColorTriplet {
             red: 255,
             green: 102,
             blue: 0,
         };
-        assert_eq!(rgb.normalized(), (1.0, 0.4, 0.0))
+        assert_eq!(color.normalized(), (1.0, 0.4, 0.0))
     }
     #[test]
-    fn rgb_rgb() {
-        let rgb = RGB {
+    fn rgb() {
+        let color = ColorTriplet {
             red: 255,
             green: 128,
             blue: 0,
         };
-        assert_eq!(rgb.rgb(), "rgb(255, 128, 0)");
+        assert_eq!(color.rgb(), "rgb(255, 128, 0)");
     }
 }
