@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Space {
     Bits2,  // Terminal defaults
     Bits4,  // 4-bit (Standard)
@@ -6,7 +6,7 @@ pub enum Space {
     Bits24, // 24-bit (True Color)
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Color {
     code: Option<u8>,
     rgb: Option<(u8, u8, u8)>,
@@ -14,6 +14,13 @@ pub struct Color {
 }
 
 impl Color {
+    pub fn sgr(&self, space: Space, foreground: bool) -> Vec<u8> {
+        match self.space {
+            Space::Bits2 => vec![if foreground { 39 } else { 49 }],
+            _ => vec![],
+        }
+    }
+
     pub fn new(color: &str) -> Result<Color, String> {
         let original = color;
         let color = original.trim().to_lowercase();
@@ -82,6 +89,14 @@ mod tests {
             space: Space::Bits2,
         };
         assert_eq!(Color::new("default"), Ok(color));
+        assert_eq!(color.sgr(Space::Bits2, false), vec![49]);
+        assert_eq!(color.sgr(Space::Bits2, true), vec![39]);
+        assert_eq!(color.sgr(Space::Bits4, false), vec![49]);
+        assert_eq!(color.sgr(Space::Bits4, true), vec![39]);
+        assert_eq!(color.sgr(Space::Bits8, false), vec![49]);
+        assert_eq!(color.sgr(Space::Bits8, true), vec![39]);
+        assert_eq!(color.sgr(Space::Bits24, false), vec![49]);
+        assert_eq!(color.sgr(Space::Bits24, true), vec![39]);
     }
 
     #[test]
