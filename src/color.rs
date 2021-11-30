@@ -70,6 +70,12 @@ impl Color {
 
     pub fn to_space(&self, space: Space) -> Option<Color> {
         match (self.space, space) {
+            (_, Space::Bits2) => Some(Color {
+                code: None,
+                rgb: None,
+                space: Space::Bits2,
+            }),
+
             (Space::Bits24, Space::Bits8) => match self.rgb {
                 Some((r, g, b)) => {
                     let (rn, gn, bn) = crate::color_systems::rgb_to_rgbn(r, g, b);
@@ -95,18 +101,14 @@ impl Color {
                 None => None,
             },
             (Space::Bits24, Space::Bits4) => None,
+            (Space::Bits24, _) => Some(*self),
 
             (Space::Bits8, Space::Bits4) => None,
+            (Space::Bits8, _) => Some(*self),
 
-            (_, Space::Bits2) => Some(Color {
-                code: None,
-                rgb: None,
-                space: Space::Bits2,
-            }),
+            (Space::Bits4, _) => Some(*self),
 
-            (a, b) if a == b => Some(*self),
-
-            _ => None,
+            (Space::Bits2, _) => Some(*self),
         }
     }
 
