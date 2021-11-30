@@ -3,7 +3,8 @@
 
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
-  description = "Rust library for rich text and beautiful formatting in the terminal"
+  description = "Library for rich text and beautiful formatting in the terminal"
+  documentation = "https://docs.rs/modern-terminal"
   edition = "2018"
   license = "MIT"
   name = "modern-terminal"
