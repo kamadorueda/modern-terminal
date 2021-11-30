@@ -26,6 +26,12 @@ impl Style {
         }
     }
 
+    pub fn not_background(&self) -> Style {
+        self.background("default")
+    }
+}
+
+impl Style {
     pub fn bold(&self) -> Style {
         Style {
             bold: Some(true),
@@ -33,6 +39,15 @@ impl Style {
         }
     }
 
+    pub fn not_bold(&self) -> Style {
+        Style {
+            bold: Some(false),
+            ..*self
+        }
+    }
+}
+
+impl Style {
     pub fn foreground(&self, color: &str) -> Style {
         match crate::color::Color::new(color) {
             Ok(color) => Style {
@@ -40,17 +55,6 @@ impl Style {
                 ..*self
             },
             _ => *self,
-        }
-    }
-
-    pub fn not_background(&self) -> Style {
-        self.background("default")
-    }
-
-    pub fn not_bold(&self) -> Style {
-        Style {
-            bold: Some(false),
-            ..*self
         }
     }
 
@@ -109,27 +113,27 @@ mod tests {
     }
 
     #[test]
-    fn ansi_sgr_bold() {
-        let style = Style::new().bold();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [1]);
-    }
-
-    #[test]
-    fn ansi_sgr_foreground() {
-        let style = Style::new().foreground("black");
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [30]);
-    }
-
-    #[test]
     fn ansi_sgr_not_background() {
         let style = Style::new().not_background();
         assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [49]);
     }
 
     #[test]
+    fn ansi_sgr_bold() {
+        let style = Style::new().bold();
+        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [1]);
+    }
+
+    #[test]
     fn ansi_sgr_not_bold() {
         let style = Style::new().not_bold();
         assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [21]);
+    }
+
+    #[test]
+    fn ansi_sgr_foreground() {
+        let style = Style::new().foreground("black");
+        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [30]);
     }
 
     #[test]
