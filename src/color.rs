@@ -112,7 +112,7 @@ impl Color {
         }
     }
 
-    pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
+    pub fn ansi_sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
                 space: Space::Bits2,
@@ -160,8 +160,8 @@ mod tests {
         };
         assert_eq!(Color::new("default"), Ok(color));
 
-        assert_eq!(color.sgr(false), Ok(vec![49]));
-        assert_eq!(color.sgr(true), Ok(vec![39]));
+        assert_eq!(color.ansi_sgr(false), Ok(vec![49]));
+        assert_eq!(color.ansi_sgr(true), Ok(vec![39]));
     }
 
     #[test]
@@ -173,8 +173,8 @@ mod tests {
         };
         assert_eq!(Color::new("black"), Ok(color));
 
-        assert_eq!(color.sgr(false), Ok(vec![40]));
-        assert_eq!(color.sgr(true), Ok(vec![30]));
+        assert_eq!(color.ansi_sgr(false), Ok(vec![40]));
+        assert_eq!(color.ansi_sgr(true), Ok(vec![30]));
     }
 
     #[test]
@@ -186,8 +186,8 @@ mod tests {
         };
         assert_eq!(Color::new("bright_black"), Ok(color));
 
-        assert_eq!(color.sgr(false), Ok(vec![100]));
-        assert_eq!(color.sgr(true), Ok(vec![90]));
+        assert_eq!(color.ansi_sgr(false), Ok(vec![100]));
+        assert_eq!(color.ansi_sgr(true), Ok(vec![90]));
     }
 
     #[test]
@@ -199,8 +199,8 @@ mod tests {
         };
         assert_eq!(Color::new("grey0"), Ok(color));
 
-        assert_eq!(color.sgr(false), Ok(vec![48, 5, 16]));
-        assert_eq!(color.sgr(true), Ok(vec![38, 5, 16]));
+        assert_eq!(color.ansi_sgr(false), Ok(vec![48, 5, 16]));
+        assert_eq!(color.ansi_sgr(true), Ok(vec![38, 5, 16]));
     }
 
     #[test]
@@ -212,8 +212,8 @@ mod tests {
         };
         assert_eq!(Color::new("#ff8000"), Ok(color));
 
-        assert_eq!(color.sgr(false), Ok(vec![48, 2, 255, 128, 0]));
-        assert_eq!(color.sgr(true), Ok(vec![38, 2, 255, 128, 0]));
+        assert_eq!(color.ansi_sgr(false), Ok(vec![48, 2, 255, 128, 0]));
+        assert_eq!(color.ansi_sgr(true), Ok(vec![38, 2, 255, 128, 0]));
 
         let color_8 = Color {
             code: Some(214),

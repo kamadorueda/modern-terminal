@@ -71,7 +71,7 @@ impl Style {
 
         if let Some(background) = self.background {
             if let Some(background) = background.to_space(space) {
-                if let Ok(mut background_sgr) = background.sgr(false) {
+                if let Ok(mut background_sgr) = background.ansi_sgr(false) {
                     sgr.append(&mut background_sgr);
                 }
             }
@@ -81,7 +81,7 @@ impl Style {
         }
         if let Some(foreground) = self.foreground {
             if let Some(foreground) = foreground.to_space(space) {
-                if let Ok(mut foreground_sgr) = foreground.sgr(true) {
+                if let Ok(mut foreground_sgr) = foreground.ansi_sgr(true) {
                     sgr.append(&mut foreground_sgr);
                 }
             }
