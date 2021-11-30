@@ -152,65 +152,70 @@ mod tests {
     use super::Space;
 
     #[test]
-    fn new_default() {
-        let color = Color {
+    fn default() {
+        let color = Color::new("default").unwrap();
+        let expected = Color {
             code: None,
             rgb: None,
             space: Space::Bits2,
         };
-        assert_eq!(Color::new("default"), Ok(color));
+        assert_eq!(color, expected);
 
         assert_eq!(color.ansi_sgr(false), Ok(vec![49]));
         assert_eq!(color.ansi_sgr(true), Ok(vec![39]));
     }
 
     #[test]
-    fn new_black() {
-        let color = Color {
+    fn black() {
+        let color = Color::new("black").unwrap();
+        let expected = Color {
             code: Some(0),
             rgb: None,
             space: Space::Bits4,
         };
-        assert_eq!(Color::new("black"), Ok(color));
+        assert_eq!(color, expected);
 
         assert_eq!(color.ansi_sgr(false), Ok(vec![40]));
         assert_eq!(color.ansi_sgr(true), Ok(vec![30]));
     }
 
     #[test]
-    fn new_bright_black() {
-        let color = Color {
+    fn bright_black() {
+        let color = Color::new("bright_black").unwrap();
+        let expected = Color {
             code: Some(8),
             rgb: None,
             space: Space::Bits4,
         };
-        assert_eq!(Color::new("bright_black"), Ok(color));
+        assert_eq!(color, expected);
 
         assert_eq!(color.ansi_sgr(false), Ok(vec![100]));
         assert_eq!(color.ansi_sgr(true), Ok(vec![90]));
     }
 
     #[test]
-    fn new_grey0() {
-        let color = Color {
+    fn grey0() {
+        let color = Color::new("grey0").unwrap();
+        let expected = Color {
             code: Some(16),
             rgb: None,
             space: Space::Bits8,
         };
-        assert_eq!(Color::new("grey0"), Ok(color));
+        assert_eq!(color, expected);
 
         assert_eq!(color.ansi_sgr(false), Ok(vec![48, 5, 16]));
         assert_eq!(color.ansi_sgr(true), Ok(vec![38, 5, 16]));
     }
 
     #[test]
-    fn new_rgb() {
-        let color = Color {
+    fn ff8000() {
+        let color = Color::new("#ff8000").unwrap();
+        let expected = Color {
             code: None,
             rgb: Some((255, 128, 0)),
             space: Space::Bits24,
         };
-        assert_eq!(Color::new("#ff8000"), Ok(color));
+        assert_eq!(color, expected);
 
         assert_eq!(color.ansi_sgr(false), Ok(vec![48, 2, 255, 128, 0]));
         assert_eq!(color.ansi_sgr(true), Ok(vec![38, 2, 255, 128, 0]));
