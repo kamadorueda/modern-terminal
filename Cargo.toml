@@ -5,7 +5,7 @@
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
   description = "Rust library for rich text and beautiful formatting in the terminal"
   edition = "2018"
-  license-file = "LICENSE"
+  license = "MIT"
   name = "modern-terminal"
   repository = "https://github.com/kamadorueda/modern-terminal"
   version = "0.1.0"
