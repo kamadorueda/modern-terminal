@@ -1,6 +1,6 @@
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Space {
-    Bits2,  // Terminal defaults
+    Bits1,  // Terminal defaults
     Bits4,  // 4-bit (Standard)
     Bits8,  // 8-bit
     Bits24, // 24-bit (True Color)
@@ -22,7 +22,7 @@ impl Color {
             return Ok(Color {
                 code: None,
                 rgb: None,
-                space: Space::Bits2,
+                space: Space::Bits1,
             });
         }
 
@@ -70,10 +70,10 @@ impl Color {
 
     pub fn to_space(&self, space: Space) -> Option<Color> {
         match (self.space, space) {
-            (_, Space::Bits2) => Some(Color {
+            (_, Space::Bits1) => Some(Color {
                 code: None,
                 rgb: None,
-                space: Space::Bits2,
+                space: Space::Bits1,
             }),
 
             (Space::Bits24, Space::Bits8) => match self.rgb {
@@ -108,14 +108,14 @@ impl Color {
 
             (Space::Bits4, _) => Some(*self),
 
-            (Space::Bits2, _) => Some(*self),
+            (Space::Bits1, _) => Some(*self),
         }
     }
 
     pub fn ansi_sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
-                space: Space::Bits2,
+                space: Space::Bits1,
                 ..
             } => Ok(vec![if foreground { 39 } else { 49 }]),
 
@@ -157,7 +157,7 @@ mod test_color {
         let expected = Color {
             code: None,
             rgb: None,
-            space: Space::Bits2,
+            space: Space::Bits1,
         };
         assert_eq!(color, expected);
 
