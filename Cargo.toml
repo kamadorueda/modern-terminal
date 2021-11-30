@@ -1,13 +1,10 @@
-cargo-features = ["edition2021"]
-
 [dependencies]
   regex = "1"
 
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
   description = "Rust library for rich text and beautiful formatting in the terminal"
-  edition = "2021"
-  license = "MIT"
+  edition = "2018"
   license-file = "LICENSE"
   name = "modern-terminal"
   repository = "https://github.com/kamadorueda/modern-terminal"
