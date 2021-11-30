@@ -69,12 +69,8 @@ impl Color {
     }
 
     pub fn to_space(&self, space: Space) -> Option<Color> {
-        if self.space == space {
-            return Some(*self);
-        }
-
-        if self.space == Space::Bits24 && space == Space::Bits8 {
-            return match self.rgb {
+        match (self.space, space) {
+            (Space::Bits24, Space::Bits8) => match self.rgb {
                 Some((r, g, b)) => {
                     let (rn, gn, bn) = crate::color_systems::rgb_to_rgbn(r, g, b);
                     let (_, s, l) = crate::color_systems::rgbn_to_hsl(rn, gn, bn);
@@ -97,10 +93,21 @@ impl Color {
                     })
                 }
                 None => None,
-            };
-        }
+            },
+            (Space::Bits24, Space::Bits4) => None,
 
-        None
+            (Space::Bits8, Space::Bits4) => None,
+
+            (_, Space::Bits2) => Some(Color {
+                code: None,
+                rgb: None,
+                space: Space::Bits2,
+            }),
+
+            (a, b) if a == b => Some(*self),
+
+            _ => None,
+        }
     }
 
     pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
