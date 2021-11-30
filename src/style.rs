@@ -1,6 +1,7 @@
 pub struct Style {
     background: Option<crate::color::Color>,
     bold: Option<bool>,
+    dim: Option<bool>,
     foreground: Option<crate::color::Color>,
 }
 
@@ -9,6 +10,7 @@ impl Style {
         Style {
             background: None,
             bold: None,
+            dim: None,
             foreground: None,
         }
     }
@@ -25,7 +27,7 @@ impl Style {
         }
     }
 
-    pub fn not_background(&mut self) -> &mut Style {
+    pub fn reset_background(&mut self) -> &mut Style {
         self.background("default")
     }
 }
@@ -43,6 +45,18 @@ impl Style {
 }
 
 impl Style {
+    pub fn dim(&mut self) -> &mut Style {
+        self.dim = Some(true);
+        self
+    }
+
+    pub fn not_dim(&mut self) -> &mut Style {
+        self.dim = Some(false);
+        self
+    }
+}
+
+impl Style {
     pub fn foreground(&mut self, color: &str) -> &mut Style {
         match crate::color::Color::new(color) {
             Ok(color) => {
@@ -53,7 +67,7 @@ impl Style {
         }
     }
 
-    pub fn not_foreground(&mut self) -> &mut Style {
+    pub fn reset_foreground(&mut self) -> &mut Style {
         self.foreground("default")
     }
 }
@@ -77,7 +91,14 @@ impl Style {
             }
         }
         if let Some(bold) = self.bold {
-            sgr.push(if bold { 1 } else { 21 });
+            if bold {
+                sgr.push(1)
+            };
+        }
+        if let Some(dim) = self.dim {
+            if dim {
+                sgr.push(2)
+            };
         }
         if let Some(foreground) = self.foreground {
             if let Some(foreground) = foreground.to_space(space) {
@@ -111,10 +132,10 @@ mod tests {
     }
 
     #[test]
-    fn ansi_sgr_not_background() {
+    fn ansi_sgr_reset_background() {
         assert_eq!(
             Style::new()
-                .not_background()
+                .reset_background()
                 .ansi_sgr(crate::color::Space::Bits24),
             [49]
         );
@@ -132,9 +153,29 @@ mod tests {
     fn ansi_sgr_not_bold() {
         assert_eq!(
             Style::new()
+                .bold()
                 .not_bold()
                 .ansi_sgr(crate::color::Space::Bits24),
-            [21]
+            []
+        );
+    }
+
+    #[test]
+    fn ansi_sgr_dim() {
+        assert_eq!(
+            Style::new().dim().ansi_sgr(crate::color::Space::Bits24),
+            [2]
+        );
+    }
+
+    #[test]
+    fn ansi_sgr_not_dim() {
+        assert_eq!(
+            Style::new()
+                .dim()
+                .not_dim()
+                .ansi_sgr(crate::color::Space::Bits24),
+            []
         );
     }
 
@@ -149,10 +190,10 @@ mod tests {
     }
 
     #[test]
-    fn ansi_sgr_not_foreground() {
+    fn ansi_sgr_reset_foreground() {
         assert_eq!(
             Style::new()
-                .not_foreground()
+                .reset_foreground()
                 .ansi_sgr(crate::color::Space::Bits24),
             [39]
         );
