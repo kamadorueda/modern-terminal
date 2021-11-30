@@ -1,4 +1,3 @@
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Style {
     background: Option<crate::color::Color>,
     bold: Option<bool>,
@@ -16,49 +15,45 @@ impl Style {
 }
 
 impl Style {
-    pub fn background(&self, color: &str) -> Style {
+    pub fn background(&mut self, color: &str) -> &mut Style {
         match crate::color::Color::new(color) {
-            Ok(color) => Style {
-                background: Some(color),
-                ..*self
-            },
-            _ => *self,
+            Ok(color) => {
+                self.background = Some(color);
+                self
+            }
+            _ => self,
         }
     }
 
-    pub fn not_background(&self) -> Style {
+    pub fn not_background(&mut self) -> &mut Style {
         self.background("default")
     }
 }
 
 impl Style {
-    pub fn bold(&self) -> Style {
-        Style {
-            bold: Some(true),
-            ..*self
-        }
+    pub fn bold(&mut self) -> &mut Style {
+        self.bold = Some(true);
+        self
     }
 
-    pub fn not_bold(&self) -> Style {
-        Style {
-            bold: Some(false),
-            ..*self
-        }
+    pub fn not_bold(&mut self) -> &mut Style {
+        self.bold = Some(false);
+        self
     }
 }
 
 impl Style {
-    pub fn foreground(&self, color: &str) -> Style {
+    pub fn foreground(&mut self, color: &str) -> &mut Style {
         match crate::color::Color::new(color) {
-            Ok(color) => Style {
-                foreground: Some(color),
-                ..*self
-            },
-            _ => *self,
+            Ok(color) => {
+                self.foreground = Some(color);
+                self
+            }
+            _ => self,
         }
     }
 
-    pub fn not_foreground(&self) -> Style {
+    pub fn not_foreground(&mut self) -> &mut Style {
         self.foreground("default")
     }
 }
@@ -102,43 +97,64 @@ mod tests {
 
     #[test]
     fn ansi_sgr() {
-        let style = Style::new();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), []);
+        assert_eq!(Style::new().ansi_sgr(crate::color::Space::Bits24), []);
     }
 
     #[test]
     fn ansi_sgr_background() {
-        let style = Style::new().background("black");
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [40]);
+        assert_eq!(
+            Style::new()
+                .background("black")
+                .ansi_sgr(crate::color::Space::Bits24),
+            [40]
+        );
     }
 
     #[test]
     fn ansi_sgr_not_background() {
-        let style = Style::new().not_background();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [49]);
+        assert_eq!(
+            Style::new()
+                .not_background()
+                .ansi_sgr(crate::color::Space::Bits24),
+            [49]
+        );
     }
 
     #[test]
     fn ansi_sgr_bold() {
-        let style = Style::new().bold();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [1]);
+        assert_eq!(
+            Style::new().bold().ansi_sgr(crate::color::Space::Bits24),
+            [1]
+        );
     }
 
     #[test]
     fn ansi_sgr_not_bold() {
-        let style = Style::new().not_bold();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [21]);
+        assert_eq!(
+            Style::new()
+                .not_bold()
+                .ansi_sgr(crate::color::Space::Bits24),
+            [21]
+        );
     }
 
     #[test]
     fn ansi_sgr_foreground() {
-        let style = Style::new().foreground("black");
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [30]);
+        assert_eq!(
+            Style::new()
+                .foreground("black")
+                .ansi_sgr(crate::color::Space::Bits24),
+            [30]
+        );
     }
 
     #[test]
     fn ansi_sgr_not_foreground() {
-        let style = Style::new().not_foreground();
-        assert_eq!(style.ansi_sgr(crate::color::Space::Bits24), [39]);
+        assert_eq!(
+            Style::new()
+                .not_foreground()
+                .ansi_sgr(crate::color::Space::Bits24),
+            [39]
+        );
     }
 }
