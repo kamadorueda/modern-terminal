@@ -27,17 +27,21 @@ pub fn rgbn_to_hsl(r: f64, g: f64, b: f64) -> (f64, f64, f64) {
 }
 
 #[cfg(test)]
-mod tests {
+mod test_rgb_to_rgbn {
     use super::rgb_to_rgbn;
+
+    #[test]
+    fn _255_102_0() {
+        assert_eq!(rgb_to_rgbn(255, 102, 0), (1.0, 0.4, 0.0))
+    }
+}
+
+#[cfg(test)]
+mod test_rgbn_to_hsl {
     use super::rgbn_to_hsl;
 
     #[test]
-    fn test_rgb_to_rgbn() {
-        assert_eq!(rgb_to_rgbn(255, 102, 0), (1.0, 0.4, 0.0))
-    }
-
-    #[test]
-    fn test_rgbn_to_hsl() {
+    fn _10_04_00() {
         assert_eq!(rgbn_to_hsl(1.0, 0.4, 0.0), (24.0, 1.0, 0.5))
     }
 }

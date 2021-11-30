@@ -113,7 +113,7 @@ impl Style {
 }
 
 #[cfg(test)]
-mod tests {
+mod test_style {
     use super::Style;
 
     #[test]

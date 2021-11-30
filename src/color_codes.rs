@@ -206,3 +206,13 @@ pub fn from_name(name: &str) -> Option<u8> {
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod test_from_name {
+    use super::from_name;
+
+    #[test]
+    fn black() {
+        assert_eq!(from_name("black"), Some(0));
+    }
+}

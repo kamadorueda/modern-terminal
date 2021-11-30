@@ -147,7 +147,7 @@ impl Color {
 }
 
 #[cfg(test)]
-mod tests {
+mod test_color {
     use super::Color;
     use super::Space;
 
