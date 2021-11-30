@@ -1,3 +1,4 @@
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Style {
     background: Option<crate::color::Color>,
     bold: Option<bool>,
@@ -21,7 +22,7 @@ impl Style {
                 background: Some(color),
                 ..*self
             },
-            _ => Style { ..*self },
+            _ => *self,
         }
     }
 
@@ -38,7 +39,7 @@ impl Style {
                 foreground: Some(color),
                 ..*self
             },
-            _ => Style { ..*self },
+            _ => *self,
         }
     }
 
