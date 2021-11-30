@@ -68,6 +68,41 @@ impl Color {
         Err(original)
     }
 
+    pub fn to_space(&self, space: Space) -> Option<Color> {
+        if self.space == space {
+            return Some(*self);
+        }
+
+        if self.space == Space::Bits24 && space == Space::Bits8 {
+            return match self.rgb {
+                Some((r, g, b)) => {
+                    let (rn, gn, bn) = crate::color_systems::rgb_to_rgbn(r, g, b);
+                    let (_, s, l) = crate::color_systems::rgbn_to_hsl(rn, gn, bn);
+
+                    Some(Color {
+                        code: Some(if s < 0.08 {
+                            match (25.0 * l).round() as u8 {
+                                0 => 16,
+                                25 => 231,
+                                step => 231 + step,
+                            }
+                        } else {
+                            (16.0
+                                + (5.0 * rn).round() * 36.0
+                                + (5.0 * gn).round() * 6.0
+                                + (5.0 * bn).round()) as u8
+                        }),
+                        rgb: None,
+                        space: Space::Bits8,
+                    })
+                }
+                None => None,
+            };
+        }
+
+        None
+    }
+
     pub fn sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
@@ -170,5 +205,12 @@ mod tests {
 
         assert_eq!(color.sgr(false), Ok(vec![48, 2, 255, 128, 0]));
         assert_eq!(color.sgr(true), Ok(vec![38, 2, 255, 128, 0]));
+
+        let color_8 = Color {
+            code: Some(214),
+            rgb: None,
+            space: Space::Bits8,
+        };
+        assert_eq!(color.to_space(Space::Bits8), Some(color_8));
     }
 }

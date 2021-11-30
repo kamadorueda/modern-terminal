@@ -6,7 +6,7 @@ pub fn rgbn_to_hsl(r: f64, g: f64, b: f64) -> (f64, f64, f64) {
     let x_max = f64::max(r, f64::max(g, b));
     let x_min = f64::min(r, f64::min(g, b));
     let l = (x_max + x_min) / 2.0;
-    let s = if l < f64::EPSILON || (l - 1.0).abs() < f64::EPSILON {
+    let s = if l.abs() < f64::EPSILON || (l - 1.0).abs() < f64::EPSILON {
         0.0
     } else {
         (x_max - l) / f64::min(l, 1.0 - l)
