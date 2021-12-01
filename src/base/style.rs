@@ -1,8 +1,8 @@
 pub struct Style {
-    background: Option<crate::color::Color>,
+    background: Option<crate::base::color::Color>,
     bold: Option<bool>,
     dim: Option<bool>,
-    foreground: Option<crate::color::Color>,
+    foreground: Option<crate::base::color::Color>,
 }
 
 impl Style {
@@ -18,7 +18,7 @@ impl Style {
 
 impl Style {
     pub fn background(&mut self, color: &str) -> &mut Style {
-        match crate::color::Color::new(color) {
+        match crate::base::color::Color::new(color) {
             Ok(color) => {
                 self.background = Some(color);
                 self
@@ -58,7 +58,7 @@ impl Style {
 
 impl Style {
     pub fn foreground(&mut self, color: &str) -> &mut Style {
-        match crate::color::Color::new(color) {
+        match crate::base::color::Color::new(color) {
             Ok(color) => {
                 self.foreground = Some(color);
                 self
@@ -73,18 +73,18 @@ impl Style {
 }
 
 impl Style {
-    pub fn ansi_escape_code(&self, space: crate::color::Space) -> String {
+    pub fn ansi_escape_code(&self, space: crate::base::color::storage::Storage) -> String {
         let sgr = self.ansi_sgr(space);
         let sgr: Vec<String> = sgr.iter().map(u8::to_string).collect();
 
         format!("\u{1b}[{}m", sgr.join(";"))
     }
 
-    pub fn ansi_sgr(&self, space: crate::color::Space) -> Vec<u8> {
+    pub fn ansi_sgr(&self, space: crate::base::color::storage::Storage) -> Vec<u8> {
         let mut sgr: Vec<u8> = Vec::new();
 
         if let Some(background) = self.background {
-            if let Some(background) = background.to_space(space) {
+            if let Some(background) = background.to_storage(space) {
                 if let Ok(mut background_sgr) = background.ansi_sgr(false) {
                     sgr.append(&mut background_sgr);
                 }
@@ -101,7 +101,7 @@ impl Style {
             };
         }
         if let Some(foreground) = self.foreground {
-            if let Some(foreground) = foreground.to_space(space) {
+            if let Some(foreground) = foreground.to_storage(space) {
                 if let Ok(mut foreground_sgr) = foreground.ansi_sgr(true) {
                     sgr.append(&mut foreground_sgr);
                 }
@@ -118,7 +118,10 @@ mod test_style {
 
     #[test]
     fn ansi_sgr() {
-        assert_eq!(Style::new().ansi_sgr(crate::color::Space::Bits24), []);
+        assert_eq!(
+            Style::new().ansi_sgr(crate::base::color::storage::Storage::Bits24),
+            []
+        );
     }
 
     #[test]
@@ -126,7 +129,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .background("black")
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [40]
         );
     }
@@ -136,7 +139,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .reset_background()
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [49]
         );
     }
@@ -144,7 +147,9 @@ mod test_style {
     #[test]
     fn ansi_sgr_bold() {
         assert_eq!(
-            Style::new().bold().ansi_sgr(crate::color::Space::Bits24),
+            Style::new()
+                .bold()
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [1]
         );
     }
@@ -155,7 +160,7 @@ mod test_style {
             Style::new()
                 .bold()
                 .not_bold()
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             []
         );
     }
@@ -163,7 +168,9 @@ mod test_style {
     #[test]
     fn ansi_sgr_dim() {
         assert_eq!(
-            Style::new().dim().ansi_sgr(crate::color::Space::Bits24),
+            Style::new()
+                .dim()
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [2]
         );
     }
@@ -174,7 +181,7 @@ mod test_style {
             Style::new()
                 .dim()
                 .not_dim()
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             []
         );
     }
@@ -184,7 +191,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .foreground("black")
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [30]
         );
     }
@@ -194,7 +201,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .reset_foreground()
-                .ansi_sgr(crate::color::Space::Bits24),
+                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
             [39]
         );
     }

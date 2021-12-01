@@ -1,21 +1,21 @@
-pub struct Text {
-    space: crate::color::Space,
-    style: crate::style::Style,
+pub struct Segment {
+    space: crate::base::color::storage::Storage,
+    style: crate::base::style::Style,
     text: String,
 }
 
-impl Text {
-    pub fn new(space: crate::color::Space) -> Text {
-        Text {
+impl Segment {
+    pub fn new(space: crate::base::color::storage::Storage) -> Segment {
+        Segment {
             space,
-            style: crate::style::Style::new(),
+            style: crate::base::style::Style::new(),
             text: String::new(),
         }
     }
 }
 
-impl Text {
-    pub fn a(&mut self, text: &str) -> &mut Text {
+impl Segment {
+    pub fn a(&mut self, text: &str) -> &mut Segment {
         if !text.is_empty() {
             self.apply_style();
             self.text.push_str(text);
@@ -37,69 +37,72 @@ impl Text {
     }
 }
 
-impl Text {
-    pub fn bg(&mut self, color: &str) -> &mut Text {
+impl Segment {
+    pub fn bg(&mut self, color: &str) -> &mut Segment {
         self.style.background(color);
         self
     }
 
-    pub fn no_bg(&mut self) -> &mut Text {
+    pub fn no_bg(&mut self) -> &mut Segment {
         self.style.reset_background();
         self
     }
 }
 
-impl Text {
-    pub fn b(&mut self) -> &mut Text {
+impl Segment {
+    pub fn b(&mut self) -> &mut Segment {
         self.style.bold();
         self
     }
 
-    pub fn not_b(&mut self) -> &mut Text {
+    pub fn not_b(&mut self) -> &mut Segment {
         self.apply_style();
         self.style.not_bold();
         self
     }
 }
 
-impl Text {
-    pub fn d(&mut self) -> &mut Text {
+impl Segment {
+    pub fn d(&mut self) -> &mut Segment {
         self.style.dim();
         self
     }
 
-    pub fn not_d(&mut self) -> &mut Text {
+    pub fn not_d(&mut self) -> &mut Segment {
         self.apply_style();
         self.style.not_dim();
         self
     }
 }
 
-impl Text {
-    pub fn fg(&mut self, color: &str) -> &mut Text {
+impl Segment {
+    pub fn fg(&mut self, color: &str) -> &mut Segment {
         self.style.foreground(color);
         self
     }
 
-    pub fn no_fg(&mut self) -> &mut Text {
+    pub fn no_fg(&mut self) -> &mut Segment {
         self.style.reset_foreground();
         self
     }
 }
 
 #[cfg(test)]
-mod test_text {
-    use super::Text;
+mod test_segment {
+    use super::Segment;
 
     #[test]
     fn default() {
-        assert_eq!(Text::new(crate::color::Space::Bits24).to_string(), "");
+        assert_eq!(
+            Segment::new(crate::base::color::storage::Storage::Bits24).to_string(),
+            ""
+        );
     }
 
     #[test]
     fn bg() {
         assert_eq!(
-            Text::new(crate::color::Space::Bits24)
+            Segment::new(crate::base::color::storage::Storage::Bits24)
                 .bg("yellow")
                 .a("a")
                 .bg("red")
@@ -114,7 +117,7 @@ mod test_text {
     #[test]
     fn b() {
         assert_eq!(
-            Text::new(crate::color::Space::Bits24)
+            Segment::new(crate::base::color::storage::Storage::Bits24)
                 .b()
                 .a("a")
                 .not_b()
@@ -129,7 +132,7 @@ mod test_text {
     #[test]
     fn d() {
         assert_eq!(
-            Text::new(crate::color::Space::Bits24)
+            Segment::new(crate::base::color::storage::Storage::Bits24)
                 .d()
                 .a("a")
                 .not_d()
@@ -144,7 +147,7 @@ mod test_text {
     #[test]
     fn fg() {
         assert_eq!(
-            Text::new(crate::color::Space::Bits24)
+            Segment::new(crate::base::color::storage::Storage::Bits24)
                 .fg("yellow")
                 .a("a")
                 .fg("red")

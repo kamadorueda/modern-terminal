@@ -4,7 +4,7 @@ where
     W: std::io::Write,
 {
     is_tty: bool,
-    space: Option<crate::color::Space>,
+    space: Option<crate::base::color::storage::Storage>,
     writer: &'a W,
 }
 
@@ -25,7 +25,11 @@ impl<'a, W> Console<'a, W>
 where
     W: std::io::Write,
 {
-    pub fn from_writer(writer: &W, is_tty: bool, space: Option<crate::color::Space>) -> Console<W> {
+    pub fn from_writer(
+        writer: &W,
+        is_tty: bool,
+        space: Option<crate::base::color::storage::Storage>,
+    ) -> Console<W> {
         Console {
             is_tty,
             space,
@@ -34,11 +38,11 @@ where
     }
 }
 
-fn detect_space() -> Option<crate::color::Space> {
+fn detect_space() -> Option<crate::base::color::storage::Storage> {
     if let Ok(term) = std::env::var("COLORTERM") {
         let term = term.trim().to_lowercase();
         if &term == "24bit" || &term == "truecolor" {
-            return Some(crate::color::Space::Bits24);
+            return Some(crate::base::color::storage::Storage::Bits24);
         }
     }
 
@@ -47,9 +51,9 @@ fn detect_space() -> Option<crate::color::Space> {
             if term == "dumb" || term == "unknown" {
                 return None;
             } else if term == "16color" {
-                return Some(crate::color::Space::Bits4);
+                return Some(crate::base::color::storage::Storage::Bits4);
             } else if term == "256color" {
-                return Some(crate::color::Space::Bits8);
+                return Some(crate::base::color::storage::Storage::Bits8);
             }
         }
     }
