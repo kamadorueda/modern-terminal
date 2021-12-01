@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct Style {
     background: Option<crate::base::color::Color>,
     bold: Option<bool>,
@@ -17,74 +18,82 @@ impl Style {
 }
 
 impl Style {
-    pub fn background(&mut self, color: &str) -> &mut Style {
+    pub fn background(&self, color: &str) -> Style {
         match crate::base::color::Color::new(color) {
-            Ok(color) => {
-                self.background = Some(color);
-                self
-            }
-            _ => self,
+            Ok(color) => Style {
+                background: Some(color),
+                ..*self
+            },
+            _ => *self,
         }
     }
 
-    pub fn reset_background(&mut self) -> &mut Style {
+    pub fn reset_background(&self) -> Style {
         self.background("default")
     }
 }
 
 impl Style {
-    pub fn bold(&mut self) -> &mut Style {
-        self.bold = Some(true);
-        self
-    }
-
-    pub fn not_bold(&mut self) -> &mut Style {
-        self.bold = Some(false);
-        self
-    }
-}
-
-impl Style {
-    pub fn dim(&mut self) -> &mut Style {
-        self.dim = Some(true);
-        self
-    }
-
-    pub fn not_dim(&mut self) -> &mut Style {
-        self.dim = Some(false);
-        self
-    }
-}
-
-impl Style {
-    pub fn foreground(&mut self, color: &str) -> &mut Style {
-        match crate::base::color::Color::new(color) {
-            Ok(color) => {
-                self.foreground = Some(color);
-                self
-            }
-            _ => self,
+    pub fn bold(&self) -> Style {
+        Style {
+            bold: Some(true),
+            ..*self
         }
     }
 
-    pub fn reset_foreground(&mut self) -> &mut Style {
+    pub fn not_bold(&self) -> Style {
+        Style {
+            bold: Some(false),
+            ..*self
+        }
+    }
+}
+
+impl Style {
+    pub fn dim(&self) -> Style {
+        Style {
+            dim: Some(true),
+            ..*self
+        }
+    }
+
+    pub fn not_dim(&self) -> Style {
+        Style {
+            dim: Some(false),
+            ..*self
+        }
+    }
+}
+
+impl Style {
+    pub fn foreground(&self, color: &str) -> Style {
+        match crate::base::color::Color::new(color) {
+            Ok(color) => Style {
+                foreground: Some(color),
+                ..*self
+            },
+            _ => *self,
+        }
+    }
+
+    pub fn reset_foreground(&self) -> Style {
         self.foreground("default")
     }
 }
 
 impl Style {
-    pub fn ansi_escape_code(&self, space: crate::base::color::storage::Storage) -> String {
-        let sgr = self.ansi_sgr(space);
+    pub fn ansi_escape_code(&self, storage: crate::base::color::storage::Storage) -> String {
+        let sgr = self.ansi_sgr(storage);
         let sgr: Vec<String> = sgr.iter().map(u8::to_string).collect();
 
         format!("\u{1b}[{}m", sgr.join(";"))
     }
 
-    pub fn ansi_sgr(&self, space: crate::base::color::storage::Storage) -> Vec<u8> {
+    pub fn ansi_sgr(&self, storage: crate::base::color::storage::Storage) -> Vec<u8> {
         let mut sgr: Vec<u8> = Vec::new();
 
         if let Some(background) = self.background {
-            if let Some(background) = background.to_storage(space) {
+            if let Some(background) = background.to_storage(storage) {
                 if let Ok(mut background_sgr) = background.ansi_sgr(false) {
                     sgr.append(&mut background_sgr);
                 }
@@ -101,7 +110,7 @@ impl Style {
             };
         }
         if let Some(foreground) = self.foreground {
-            if let Some(foreground) = foreground.to_storage(space) {
+            if let Some(foreground) = foreground.to_storage(storage) {
                 if let Ok(mut foreground_sgr) = foreground.ansi_sgr(true) {
                     sgr.append(&mut foreground_sgr);
                 }
@@ -109,6 +118,10 @@ impl Style {
         }
 
         sgr
+    }
+
+    pub fn render(&self, text: &str, storage: crate::base::color::storage::Storage) -> String {
+        format!("{}{}", self.ansi_escape_code(storage), text)
     }
 }
 

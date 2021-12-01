@@ -1,2 +1,2 @@
 pub mod base;
-pub mod console;
+pub mod components;
