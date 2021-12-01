@@ -1,5 +1,6 @@
 [dependencies]
   regex = "1"
+  serde_json = "1.0"
 
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
