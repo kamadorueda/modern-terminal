@@ -1,5 +1,11 @@
 pub struct ColorPalette {}
 
+impl ColorPalette {
+    pub fn new() -> ColorPalette {
+        ColorPalette {}
+    }
+}
+
 impl crate::base::render::Render for ColorPalette {
     fn render(&self, options: &crate::base::render::Options) -> crate::base::render::Segments {
         let mut segments = Vec::new();
