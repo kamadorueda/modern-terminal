@@ -1,7 +1,6 @@
 [dependencies]
   libc = "0.2"
-  regex = "1.5"
-  serde_json = "1.0"
+  regex = "1"
 
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
@@ -11,4 +10,4 @@
   license = "MIT"
   name = "modern-terminal"
   repository = "https://github.com/kamadorueda/modern-terminal"
-  version = "0.3.0"
+  version = "0.4.0"
