@@ -2,7 +2,7 @@ pub struct Console<'a, W>
 where
     W: std::io::Write,
 {
-    is_tty: bool,
+    options: crate::base::render::Options,
     storage: Option<crate::base::color::storage::Storage>,
     writer: &'a mut W,
 }
@@ -11,36 +11,11 @@ impl<'a, W> Console<'a, W>
 where
     W: std::io::Write,
 {
-    pub fn columns(&self) -> u8 {
-        if let Ok(columns) = std::env::var("COLUMNS") {
-            if let Ok(columns) = u8::from_str_radix(&columns, 10) {
-                return columns;
-            }
-        }
-
-        80
-    }
-
-    pub fn lines(&self) -> u8 {
-        if let Ok(lines) = std::env::var("LINES") {
-            if let Ok(lines) = u8::from_str_radix(&lines, 10) {
-                return lines;
-            }
-        }
-
-        25
-    }
-
     pub fn render<R>(&mut self, component: &R) -> std::io::Result<()>
     where
         R: crate::base::render::Render,
     {
-        let options = crate::base::render::Options {
-            columns: self.columns(),
-            lines: self.lines(),
-        };
-
-        for (text, style) in component.render(options).iter() {
+        for (text, style) in component.render(&self.options).iter() {
             let text = match self.storage {
                 Some(storage) => style.render(text, storage),
                 None => text.to_string(),
@@ -58,8 +33,15 @@ where
     W: std::io::Write + std::os::unix::io::AsRawFd,
 {
     pub fn from_os(writer: &mut W) -> Console<W> {
+        let is_tty = is_tty(writer);
+        let tty_size = tty_size(writer);
+
         Console {
-            is_tty: is_tty(writer),
+            options: crate::base::render::Options {
+                is_tty,
+                columns: tty_size.0,
+                rows: tty_size.1,
+            },
             storage: detect_storage(),
             writer,
         }
@@ -72,11 +54,11 @@ where
 {
     pub fn from_writer(
         writer: &mut W,
-        is_tty: bool,
+        options: crate::base::render::Options,
         storage: Option<crate::base::color::storage::Storage>,
     ) -> Console<W> {
         Console {
-            is_tty,
+            options,
             storage,
             writer,
         }
@@ -114,6 +96,28 @@ where
     unsafe { libc::isatty(fd) != 0 }
 }
 
+fn tty_size<W>(writer: &W) -> (usize, usize)
+where
+    W: std::io::Write + std::os::unix::io::AsRawFd,
+{
+    let fd = writer.as_raw_fd();
+    let mut size = libc::winsize {
+        ws_row: 0,
+        ws_col: 0,
+        ws_xpixel: 0,
+        ws_ypixel: 0,
+    };
+
+    if unsafe { libc::ioctl(fd, libc::TIOCGWINSZ.into(), &mut size) } != -1
+        && size.ws_col > 0
+        && size.ws_row > 0
+    {
+        (size.ws_col.into(), size.ws_row.into())
+    } else {
+        (80, 25)
+    }
+}
+
 #[cfg(test)]
 mod test_console {
     use super::Console;
@@ -126,15 +130,20 @@ mod test_console {
 
     #[test]
     fn from_writer() {
+        let options = crate::base::render::Options {
+            columns: 80,
+            is_tty: false,
+            rows: 25,
+        };
         let mut writer = std::io::Cursor::new(Vec::new());
-        let console = Console::from_writer(&mut writer, false, None);
+        let console = Console::from_writer(&mut writer, options, None);
         let mut writer = std::io::Cursor::new(Vec::new());
         let expected = Console {
-            is_tty: false,
+            options,
             storage: None,
             writer: &mut writer,
         };
-        assert_eq!(console.is_tty, expected.is_tty);
+        assert_eq!(console.options, expected.options);
         assert_eq!(console.storage, expected.storage);
     }
 }

@@ -1,8 +1,13 @@
+pub type Segment = (String, crate::base::style::Style);
+pub type Segments = Vec<Segment>;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Options {
-    pub columns: u8,
-    pub lines: u8,
+    pub columns: usize,
+    pub is_tty: bool,
+    pub rows: usize,
 }
 
 pub trait Render {
-    fn render(&self, options: Options) -> Vec<(String, crate::base::style::Style)>;
+    fn render(&self, options: &Options) -> Segments;
 }
