@@ -21,6 +21,7 @@ for example in examples/*.rs; do
       echo $ cargo run --example ${example}
       echo
       target/release/examples/${example}
+      echo
     " \
     --overwrite \
     "examples/${example}.cast"
