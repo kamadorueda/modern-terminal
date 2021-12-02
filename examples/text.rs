@@ -1,15 +1,10 @@
 extern crate lipsum;
 extern crate modern_terminal;
 
-use {
-    lipsum::lipsum,
-    modern_terminal::{
-        base::{
-            console::Console,
-            style::Style,
-        },
-        components::text::Text,
-    },
+use lipsum::lipsum;
+use modern_terminal::{
+    base::{console::Console, style::Style},
+    components::text::Text,
 };
 
 fn main() -> std::io::Result<()> {

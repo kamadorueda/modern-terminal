@@ -4,7 +4,10 @@ pub struct Text {
 }
 
 impl Text {
-    pub fn new(text: String, style: crate::base::style::Style) -> Text {
+    pub fn new(
+        text: String,
+        style: crate::base::style::Style,
+    ) -> Text {
         Text { style, text }
     }
 }
@@ -24,13 +27,17 @@ impl crate::base::render::Render for Text {
     }
 }
 
-fn wrap(text: &str, columns: usize, rows: usize) -> Vec<String> {
+fn wrap(
+    text: &str,
+    columns: usize,
+    rows: usize,
+) -> Vec<String> {
     let mut lines = Vec::new();
 
     for line in &mut textwrap::wrap(text, columns) {
         let line = String::from(match line {
-            | std::borrow::Cow::Borrowed(line) => *line,
-            | std::borrow::Cow::Owned(line) => line,
+            std::borrow::Cow::Borrowed(line) => *line,
+            std::borrow::Cow::Owned(line) => line,
         });
         let line = format!("{:columns$}", line, columns = columns);
         if lines.len() < rows {

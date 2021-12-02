@@ -24,17 +24,17 @@ impl Color {
 
         if let Some(code) = crate::base::color::codes::from_name(&color) {
             return match code {
-                | 0..=7 => Ok(Color {
+                0..=7 => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits4,
                 }),
-                | 8..=15 => Ok(Color {
+                8..=15 => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits4,
                 }),
-                | _ => Ok(Color {
+                _ => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits8,
@@ -71,17 +71,17 @@ impl Color {
         storage: crate::base::color::storage::Storage,
     ) -> Option<Color> {
         match (self.storage, storage) {
-            | (_, crate::base::color::storage::Storage::Bits1) => Some(Color {
+            (_, crate::base::color::storage::Storage::Bits1) => Some(Color {
                 code:    None,
                 rgb:     None,
                 storage: crate::base::color::storage::Storage::Bits1,
             }),
 
-            | (
+            (
                 crate::base::color::storage::Storage::Bits24,
                 crate::base::color::storage::Storage::Bits8,
             ) => match self.rgb {
-                | Some((r, g, b)) => {
+                Some((r, g, b)) => {
                     let (rn, gn, bn) =
                         crate::base::color::model::rgb_to_rgbn(r, g, b);
                     let (_, s, l) =
@@ -90,9 +90,9 @@ impl Color {
                     Some(Color {
                         code:    Some(if s < 0.08 {
                             match (25.0 * l).round() as u8 {
-                                | 0 => 16,
-                                | 25 => 231,
-                                | step => 231 + step,
+                                0 => 16,
+                                25 => 231,
+                                step => 231 + step,
                             }
                         }
                         else {
@@ -106,56 +106,59 @@ impl Color {
                         storage: crate::base::color::storage::Storage::Bits8,
                     })
                 },
-                | None => None,
+                None => None,
             },
-            | (
+            (
                 crate::base::color::storage::Storage::Bits24,
                 crate::base::color::storage::Storage::Bits4,
             ) => None,
-            | (crate::base::color::storage::Storage::Bits24, _) => Some(*self),
+            (crate::base::color::storage::Storage::Bits24, _) => Some(*self),
 
-            | (
+            (
                 crate::base::color::storage::Storage::Bits8,
                 crate::base::color::storage::Storage::Bits4,
             ) => None,
-            | (crate::base::color::storage::Storage::Bits8, _) => Some(*self),
+            (crate::base::color::storage::Storage::Bits8, _) => Some(*self),
 
-            | (crate::base::color::storage::Storage::Bits4, _) => Some(*self),
+            (crate::base::color::storage::Storage::Bits4, _) => Some(*self),
 
-            | (crate::base::color::storage::Storage::Bits1, _) => Some(*self),
+            (crate::base::color::storage::Storage::Bits1, _) => Some(*self),
         }
     }
 
-    pub fn ansi_sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
+    pub fn ansi_sgr(
+        &self,
+        foreground: bool,
+    ) -> Result<Vec<u8>, &Color> {
         match self {
-            | Color {
+            Color {
                 storage: crate::base::color::storage::Storage::Bits1,
                 ..
             } => Ok(vec![if foreground { 39 } else { 49 }]),
 
-            | Color {
+            Color {
                 code: Some(code),
                 storage: crate::base::color::storage::Storage::Bits4,
                 ..
             } => match code {
-                | 0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
-                | 8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
-                | 16..=255 => Err(self),
+                0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
+                8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
+                16..=255 => Err(self),
             },
 
-            | Color {
+            Color {
                 code: Some(code),
                 storage: crate::base::color::storage::Storage::Bits8,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 5, *code]),
 
-            | Color {
+            Color {
                 rgb: Some((r, g, b)),
                 storage: crate::base::color::storage::Storage::Bits24,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
 
-            | _ => Err(self),
+            _ => Err(self),
         }
     }
 }

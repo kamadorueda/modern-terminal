@@ -18,10 +18,13 @@ impl Style {
 }
 
 impl Style {
-    pub fn background(&self, color: &str) -> Style {
+    pub fn background(
+        &self,
+        color: &str,
+    ) -> Style {
         match crate::base::color::Color::new(color) {
-            | Ok(color) => Style { background: Some(color), ..*self },
-            | _ => *self,
+            Ok(color) => Style { background: Some(color), ..*self },
+            _ => *self,
         }
     }
 
@@ -41,10 +44,13 @@ impl Style {
 }
 
 impl Style {
-    pub fn foreground(&self, color: &str) -> Style {
+    pub fn foreground(
+        &self,
+        color: &str,
+    ) -> Style {
         match crate::base::color::Color::new(color) {
-            | Ok(color) => Style { foreground: Some(color), ..*self },
-            | _ => *self,
+            Ok(color) => Style { foreground: Some(color), ..*self },
+            _ => *self,
         }
     }
 

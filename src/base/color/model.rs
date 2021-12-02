@@ -1,4 +1,8 @@
-pub fn hsl_to_rgbn(h: f64, s: f64, l: f64) -> (f64, f64, f64) {
+pub fn hsl_to_rgbn(
+    h: f64,
+    s: f64,
+    l: f64,
+) -> (f64, f64, f64) {
     let c = s * (1.0 - (2.0 * l - 1.0).abs());
     let x = c * (1.0 - ((h / 60.0) % 2.0 - 1.0).abs());
     let m = l - c / 2.0;
@@ -25,21 +29,37 @@ pub fn hsl_to_rgbn(h: f64, s: f64, l: f64) -> (f64, f64, f64) {
     (r + m, g + m, b + m)
 }
 
-pub fn hsl_to_rgb(h: f64, s: f64, l: f64) -> (u8, u8, u8) {
+pub fn hsl_to_rgb(
+    h: f64,
+    s: f64,
+    l: f64,
+) -> (u8, u8, u8) {
     let (rn, gn, bn) = hsl_to_rgbn(h, s, l);
     rgbn_to_rgb(rn, gn, bn)
 }
 
-pub fn rgb_to_rgbn(r: u8, g: u8, b: u8) -> (f64, f64, f64) {
+pub fn rgb_to_rgbn(
+    r: u8,
+    g: u8,
+    b: u8,
+) -> (f64, f64, f64) {
     (r as f64 / 255.0, g as f64 / 255.0, b as f64 / 255.0)
 }
 
-pub fn rgb_to_hsl(r: u8, g: u8, b: u8) -> (f64, f64, f64) {
+pub fn rgb_to_hsl(
+    r: u8,
+    g: u8,
+    b: u8,
+) -> (f64, f64, f64) {
     let (rn, gn, bn) = rgb_to_rgbn(r, g, b);
     rgbn_to_hsl(rn, gn, bn)
 }
 
-pub fn rgbn_to_hsl(r: f64, g: f64, b: f64) -> (f64, f64, f64) {
+pub fn rgbn_to_hsl(
+    r: f64,
+    g: f64,
+    b: f64,
+) -> (f64, f64, f64) {
     let x_max = f64::max(r, f64::max(g, b));
     let x_min = f64::min(r, f64::min(g, b));
     let l = (x_max + x_min) / 2.0;
@@ -68,16 +88,17 @@ pub fn rgbn_to_hsl(r: f64, g: f64, b: f64) -> (f64, f64, f64) {
     (h, s, l)
 }
 
-pub fn rgbn_to_rgb(r: f64, g: f64, b: f64) -> (u8, u8, u8) {
+pub fn rgbn_to_rgb(
+    r: f64,
+    g: f64,
+    b: f64,
+) -> (u8, u8, u8) {
     ((r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8)
 }
 
 #[cfg(test)]
 mod test_rgb_to_rgbn {
-    use super::{
-        rgb_to_rgbn,
-        rgbn_to_rgb,
-    };
+    use super::{rgb_to_rgbn, rgbn_to_rgb};
 
     #[test]
     fn _255_102_0() {
@@ -88,10 +109,7 @@ mod test_rgb_to_rgbn {
 
 #[cfg(test)]
 mod test_rgb_to_hsl {
-    use super::{
-        hsl_to_rgb,
-        rgb_to_hsl,
-    };
+    use super::{hsl_to_rgb, rgb_to_hsl};
 
     #[test]
     fn _10_04_00() {

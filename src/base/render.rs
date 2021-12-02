@@ -9,5 +9,8 @@ pub struct Options {
 }
 
 pub trait Render {
-    fn render(&self, options: &Options) -> Segments;
+    fn render(
+        &self,
+        options: &Options,
+    ) -> Segments;
 }
