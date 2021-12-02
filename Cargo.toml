@@ -1,6 +1,10 @@
 [dependencies]
   libc = "0.2"
   regex = "1"
+  textwrap = "0.14"
+
+[dev-dependencies]
+  lipsum = "0.8"
 
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
