@@ -4,7 +4,7 @@ where
 {
     options: crate::base::render::Options,
     storage: Option<crate::base::color::storage::Storage>,
-    writer: &'a mut W,
+    writer:  &'a mut W,
 }
 
 impl<'a, W> Console<'a, W>
@@ -17,8 +17,8 @@ where
     {
         for (text, style) in component.render(&self.options).iter() {
             let text = match self.storage {
-                Some(storage) => style.render(text, storage),
-                None => text.to_string(),
+                | Some(storage) => style.render(text, storage),
+                | None => text.to_string(),
             };
 
             self.writer.write(text.as_bytes())?;
@@ -57,11 +57,7 @@ where
         options: crate::base::render::Options,
         storage: Option<crate::base::color::storage::Storage>,
     ) -> Console<W> {
-        Console {
-            options,
-            storage,
-            writer,
-        }
+        Console { options, storage, writer }
     }
 }
 
@@ -77,9 +73,11 @@ fn detect_storage() -> Option<crate::base::color::storage::Storage> {
         if let Some((_, term)) = term.trim().to_lowercase().rsplit_once("-") {
             if term == "dumb" || term == "unknown" {
                 return None;
-            } else if term == "16color" {
+            }
+            else if term == "16color" {
                 return Some(crate::base::color::storage::Storage::Bits4);
-            } else if term == "256color" {
+            }
+            else if term == "256color" {
                 return Some(crate::base::color::storage::Storage::Bits8);
             }
         }
@@ -102,8 +100,8 @@ where
 {
     let fd = writer.as_raw_fd();
     let mut size = libc::winsize {
-        ws_row: 0,
-        ws_col: 0,
+        ws_row:    0,
+        ws_col:    0,
         ws_xpixel: 0,
         ws_ypixel: 0,
     };
@@ -113,7 +111,8 @@ where
         && size.ws_row > 0
     {
         (size.ws_col.into(), size.ws_row.into())
-    } else {
+    }
+    else {
         (80, 25)
     }
 }
@@ -132,17 +131,13 @@ mod test_console {
     fn from_writer() {
         let options = crate::base::render::Options {
             columns: 80,
-            is_tty: false,
-            rows: 25,
+            is_tty:  false,
+            rows:    25,
         };
         let mut writer = std::io::Cursor::new(Vec::new());
         let console = Console::from_writer(&mut writer, options, None);
         let mut writer = std::io::Cursor::new(Vec::new());
-        let expected = Console {
-            options,
-            storage: None,
-            writer: &mut writer,
-        };
+        let expected = Console { options, storage: None, writer: &mut writer };
         assert_eq!(console.options, expected.options);
         assert_eq!(console.storage, expected.storage);
     }

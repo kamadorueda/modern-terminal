@@ -4,8 +4,8 @@ pub mod storage;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Color {
-    code: Option<u8>,
-    rgb: Option<(u8, u8, u8)>,
+    code:    Option<u8>,
+    rgb:     Option<(u8, u8, u8)>,
     storage: crate::base::color::storage::Storage,
 }
 
@@ -16,27 +16,27 @@ impl Color {
 
         if color == "default" {
             return Ok(Color {
-                code: None,
-                rgb: None,
+                code:    None,
+                rgb:     None,
                 storage: crate::base::color::storage::Storage::Bits1,
             });
         }
 
         if let Some(code) = crate::base::color::codes::from_name(&color) {
             return match code {
-                0..=7 => Ok(Color {
-                    code: Some(code),
-                    rgb: None,
+                | 0..=7 => Ok(Color {
+                    code:    Some(code),
+                    rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits4,
                 }),
-                8..=15 => Ok(Color {
-                    code: Some(code),
-                    rgb: None,
+                | 8..=15 => Ok(Color {
+                    code:    Some(code),
+                    rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits4,
                 }),
-                _ => Ok(Color {
-                    code: Some(code),
-                    rgb: None,
+                | _ => Ok(Color {
+                    code:    Some(code),
+                    rgb:     None,
                     storage: crate::base::color::storage::Storage::Bits8,
                 }),
             };
@@ -48,14 +48,16 @@ impl Color {
             // rgb(255, 0, 255)
             (10, r"^rgb\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*\)$"),
         ] {
-            for capture in regex::Regex::new(regex).unwrap().captures_iter(&color) {
+            for capture in
+                regex::Regex::new(regex).unwrap().captures_iter(&color)
+            {
                 let red = u8::from_str_radix(&capture[1], *radix).unwrap();
                 let green = u8::from_str_radix(&capture[2], *radix).unwrap();
                 let blue = u8::from_str_radix(&capture[3], *radix).unwrap();
 
                 return Ok(Color {
-                    code: None,
-                    rgb: Some((red, green, blue)),
+                    code:    None,
+                    rgb:     Some((red, green, blue)),
                     storage: crate::base::color::storage::Storage::Bits24,
                 });
             }
@@ -64,89 +66,96 @@ impl Color {
         Err(original)
     }
 
-    pub fn to_storage(&self, storage: crate::base::color::storage::Storage) -> Option<Color> {
+    pub fn to_storage(
+        &self,
+        storage: crate::base::color::storage::Storage,
+    ) -> Option<Color> {
         match (self.storage, storage) {
-            (_, crate::base::color::storage::Storage::Bits1) => Some(Color {
-                code: None,
-                rgb: None,
+            | (_, crate::base::color::storage::Storage::Bits1) => Some(Color {
+                code:    None,
+                rgb:     None,
                 storage: crate::base::color::storage::Storage::Bits1,
             }),
 
-            (
+            | (
                 crate::base::color::storage::Storage::Bits24,
                 crate::base::color::storage::Storage::Bits8,
             ) => match self.rgb {
-                Some((r, g, b)) => {
-                    let (rn, gn, bn) = crate::base::color::model::rgb_to_rgbn(r, g, b);
-                    let (_, s, l) = crate::base::color::model::rgbn_to_hsl(rn, gn, bn);
+                | Some((r, g, b)) => {
+                    let (rn, gn, bn) =
+                        crate::base::color::model::rgb_to_rgbn(r, g, b);
+                    let (_, s, l) =
+                        crate::base::color::model::rgbn_to_hsl(rn, gn, bn);
 
                     Some(Color {
-                        code: Some(if s < 0.08 {
+                        code:    Some(if s < 0.08 {
                             match (25.0 * l).round() as u8 {
-                                0 => 16,
-                                25 => 231,
-                                step => 231 + step,
+                                | 0 => 16,
+                                | 25 => 231,
+                                | step => 231 + step,
                             }
-                        } else {
+                        }
+                        else {
                             (16.0
                                 + (5.0 * rn).round() * 36.0
                                 + (5.0 * gn).round() * 6.0
-                                + (5.0 * bn).round()) as u8
+                                + (5.0 * bn).round())
+                                as u8
                         }),
-                        rgb: None,
+                        rgb:     None,
                         storage: crate::base::color::storage::Storage::Bits8,
                     })
-                }
-                None => None,
+                },
+                | None => None,
             },
-            (
+            | (
                 crate::base::color::storage::Storage::Bits24,
                 crate::base::color::storage::Storage::Bits4,
             ) => None,
-            (crate::base::color::storage::Storage::Bits24, _) => Some(*self),
+            | (crate::base::color::storage::Storage::Bits24, _) => Some(*self),
 
-            (
+            | (
                 crate::base::color::storage::Storage::Bits8,
                 crate::base::color::storage::Storage::Bits4,
             ) => None,
-            (crate::base::color::storage::Storage::Bits8, _) => Some(*self),
+            | (crate::base::color::storage::Storage::Bits8, _) => Some(*self),
 
-            (crate::base::color::storage::Storage::Bits4, _) => Some(*self),
+            | (crate::base::color::storage::Storage::Bits4, _) => Some(*self),
 
-            (crate::base::color::storage::Storage::Bits1, _) => Some(*self),
+            | (crate::base::color::storage::Storage::Bits1, _) => Some(*self),
         }
     }
 
     pub fn ansi_sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
-            Color {
+            | Color {
                 storage: crate::base::color::storage::Storage::Bits1,
                 ..
             } => Ok(vec![if foreground { 39 } else { 49 }]),
 
-            Color {
+            | Color {
                 code: Some(code),
                 storage: crate::base::color::storage::Storage::Bits4,
                 ..
             } => match code {
-                0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
-                8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
-                16..=255 => Err(self),
+                | 0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
+                | 8..=15 => Ok(vec![code + if foreground { 82 } else { 92 }]),
+                | 16..=255 => Err(self),
             },
 
-            Color {
+            | Color {
                 code: Some(code),
                 storage: crate::base::color::storage::Storage::Bits8,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 5, *code]),
 
-            Color {
+            | Color {
                 rgb: Some((r, g, b)),
                 storage: crate::base::color::storage::Storage::Bits24,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
 
-            _ => Err(self),
+            | _ => Err(self),
         }
     }
 }
@@ -159,8 +168,8 @@ mod test_color {
     fn default() {
         let color = Color::new("default").unwrap();
         let expected = Color {
-            code: None,
-            rgb: None,
+            code:    None,
+            rgb:     None,
             storage: crate::base::color::storage::Storage::Bits1,
         };
         assert_eq!(color, expected);
@@ -173,8 +182,8 @@ mod test_color {
     fn black() {
         let color = Color::new("black").unwrap();
         let expected = Color {
-            code: Some(0),
-            rgb: None,
+            code:    Some(0),
+            rgb:     None,
             storage: crate::base::color::storage::Storage::Bits4,
         };
         assert_eq!(color, expected);
@@ -187,8 +196,8 @@ mod test_color {
     fn bright_black() {
         let color = Color::new("bright_black").unwrap();
         let expected = Color {
-            code: Some(8),
-            rgb: None,
+            code:    Some(8),
+            rgb:     None,
             storage: crate::base::color::storage::Storage::Bits4,
         };
         assert_eq!(color, expected);
@@ -201,8 +210,8 @@ mod test_color {
     fn grey0() {
         let color = Color::new("grey0").unwrap();
         let expected = Color {
-            code: Some(16),
-            rgb: None,
+            code:    Some(16),
+            rgb:     None,
             storage: crate::base::color::storage::Storage::Bits8,
         };
         assert_eq!(color, expected);
@@ -215,8 +224,8 @@ mod test_color {
     fn ff8000() {
         let color = Color::new("#ff8000").unwrap();
         let expected = Color {
-            code: None,
-            rgb: Some((255, 128, 0)),
+            code:    None,
+            rgb:     Some((255, 128, 0)),
             storage: crate::base::color::storage::Storage::Bits24,
         };
         assert_eq!(color, expected);
@@ -225,8 +234,8 @@ mod test_color {
         assert_eq!(color.ansi_sgr(true), Ok(vec![38, 2, 255, 128, 0]));
 
         let color_8 = Color {
-            code: Some(214),
-            rgb: None,
+            code:    Some(214),
+            rgb:     None,
             storage: crate::base::color::storage::Storage::Bits8,
         };
         assert_eq!(

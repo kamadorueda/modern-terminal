@@ -1,10 +1,16 @@
 extern crate lipsum;
 extern crate modern_terminal;
 
-use lipsum::lipsum;
-use modern_terminal::base::console::Console;
-use modern_terminal::base::style::Style;
-use modern_terminal::components::text::Text;
+use {
+    lipsum::lipsum,
+    modern_terminal::{
+        base::{
+            console::Console,
+            style::Style,
+        },
+        components::text::Text,
+    },
+};
 
 fn main() -> std::io::Result<()> {
     let mut writer = std::io::stdout();
