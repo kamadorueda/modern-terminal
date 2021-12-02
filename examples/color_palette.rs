@@ -4,10 +4,12 @@ use modern_terminal::base::console::Console;
 use modern_terminal::components::color_palette::ColorPalette;
 
 fn main() -> std::io::Result<()> {
-    let mut stdout = std::io::stdout();
-    let mut console = Console::from_os(&mut stdout);
+    let mut writer = std::io::stdout();
+    let mut console = Console::from_fd(&mut writer);
 
-    console.render(&ColorPalette::new())?;
+    let component = ColorPalette::new();
+
+    console.render(&component)?;
 
     Ok(())
 }

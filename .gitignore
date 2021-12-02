@@ -1,2 +1,5 @@
+/examples/*
+!/examples/*.rs
+!/examples/*.svg
 /target
 Cargo.lock

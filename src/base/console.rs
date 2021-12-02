@@ -32,7 +32,7 @@ impl<'a, W> Console<'a, W>
 where
     W: std::io::Write + std::os::unix::io::AsRawFd,
 {
-    pub fn from_os(writer: &mut W) -> Console<W> {
+    pub fn from_fd(writer: &mut W) -> Console<W> {
         let is_tty = is_tty(writer);
         let tty_size = tty_size(writer);
 
@@ -123,9 +123,9 @@ mod test_console {
     use super::Console;
 
     #[test]
-    fn from_os() {
+    fn from_fd() {
         let mut writer = std::io::stdout();
-        Console::from_os(&mut writer);
+        Console::from_fd(&mut writer);
     }
 
     #[test]
