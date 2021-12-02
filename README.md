@@ -29,5 +29,5 @@ and more — out of the box. -->
 [COLOR_PALETTE]: ./examples/color_palette.svg
 [TEXT]: ./examples/text.svg
 --- -->
-[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.5.0/examples/color_palette.svg
-[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.5.0/examples/text.svg
+[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/main/examples/color_palette.svg
+[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/main/examples/text.svg
