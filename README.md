@@ -1,7 +1,7 @@
 **Modern Terminal** is a Rust library
 for rich text and beautiful formatting.
 
-Users of your command line applications are simply going to love it :heart:
+Users of your command line applications are simply going to love it ❤️
 
 [![](https://img.shields.io/crates/v/modern-terminal?color=green)](
   https://crates.io/crates/modern-terminal)
