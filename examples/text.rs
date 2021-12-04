@@ -3,8 +3,8 @@ extern crate modern_terminal;
 
 use lipsum::lipsum;
 use modern_terminal::{
-    base::{console::Console, style::Style},
     components::text::Text,
+    core::{console::Console, style::Style},
 };
 
 fn main() -> std::io::Result<()> {

@@ -1,9 +1,9 @@
 #[derive(Clone, Debug, Copy)]
 pub struct Style {
-    background: Option<crate::base::color::Color>,
+    background: Option<crate::core::color::Color>,
     bold:       Option<bool>,
     dim:        Option<bool>,
-    foreground: Option<crate::base::color::Color>,
+    foreground: Option<crate::core::color::Color>,
 }
 
 impl Style {
@@ -22,7 +22,7 @@ impl Style {
         &self,
         color: &str,
     ) -> Style {
-        match crate::base::color::Color::new(color) {
+        match crate::core::color::Color::new(color) {
             Ok(color) => Style { background: Some(color), ..*self },
             _ => *self,
         }
@@ -58,7 +58,7 @@ impl Style {
         &self,
         color: &str,
     ) -> Style {
-        match crate::base::color::Color::new(color) {
+        match crate::core::color::Color::new(color) {
             Ok(color) => Style { foreground: Some(color), ..*self },
             _ => *self,
         }
@@ -72,7 +72,7 @@ impl Style {
 impl Style {
     pub fn ansi_escape_code(
         &self,
-        storage: crate::base::color::storage::Storage,
+        storage: crate::core::color::storage::Storage,
     ) -> String {
         let sgr = self.ansi_sgr(storage);
         let sgr: Vec<String> = sgr.iter().map(u8::to_string).collect();
@@ -82,7 +82,7 @@ impl Style {
 
     pub fn ansi_sgr(
         &self,
-        storage: crate::base::color::storage::Storage,
+        storage: crate::core::color::storage::Storage,
     ) -> Vec<u8> {
         let mut sgr: Vec<u8> = Vec::new();
 
@@ -117,7 +117,7 @@ impl Style {
     pub fn render(
         &self,
         text: &str,
-        storage: crate::base::color::storage::Storage,
+        storage: crate::core::color::storage::Storage,
     ) -> String {
         format!("{}{}", self.ansi_escape_code(storage), text)
     }
@@ -130,7 +130,7 @@ mod test_style {
     #[test]
     fn ansi_sgr() {
         assert_eq!(
-            Style::new().ansi_sgr(crate::base::color::storage::Storage::Bits24),
+            Style::new().ansi_sgr(crate::core::color::storage::Storage::Bits24),
             []
         );
     }
@@ -140,7 +140,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .background("black")
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [40]
         );
     }
@@ -150,7 +150,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .reset_background()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [49]
         );
     }
@@ -160,7 +160,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .bold()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [1]
         );
     }
@@ -171,7 +171,7 @@ mod test_style {
             Style::new()
                 .bold()
                 .not_bold()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             []
         );
     }
@@ -181,7 +181,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .dim()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [2]
         );
     }
@@ -192,7 +192,7 @@ mod test_style {
             Style::new()
                 .dim()
                 .not_dim()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             []
         );
     }
@@ -202,7 +202,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .foreground("black")
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [30]
         );
     }
@@ -212,7 +212,7 @@ mod test_style {
         assert_eq!(
             Style::new()
                 .reset_foreground()
-                .ansi_sgr(crate::base::color::storage::Storage::Bits24),
+                .ansi_sgr(crate::core::color::storage::Storage::Bits24),
             [39]
         );
     }

@@ -6,7 +6,7 @@ pub mod storage;
 pub struct Color {
     code:    Option<u8>,
     rgb:     Option<(u8, u8, u8)>,
-    storage: crate::base::color::storage::Storage,
+    storage: crate::core::color::storage::Storage,
 }
 
 impl Color {
@@ -18,26 +18,26 @@ impl Color {
             return Ok(Color {
                 code:    None,
                 rgb:     None,
-                storage: crate::base::color::storage::Storage::Bits1,
+                storage: crate::core::color::storage::Storage::Bits1,
             });
         }
 
-        if let Some(code) = crate::base::color::codes::from_name(&color) {
+        if let Some(code) = crate::core::color::codes::from_name(&color) {
             return match code {
                 0..=7 => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
-                    storage: crate::base::color::storage::Storage::Bits4,
+                    storage: crate::core::color::storage::Storage::Bits4,
                 }),
                 8..=15 => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
-                    storage: crate::base::color::storage::Storage::Bits4,
+                    storage: crate::core::color::storage::Storage::Bits4,
                 }),
                 _ => Ok(Color {
                     code:    Some(code),
                     rgb:     None,
-                    storage: crate::base::color::storage::Storage::Bits8,
+                    storage: crate::core::color::storage::Storage::Bits8,
                 }),
             };
         }
@@ -58,7 +58,7 @@ impl Color {
                 return Ok(Color {
                     code:    None,
                     rgb:     Some((red, green, blue)),
-                    storage: crate::base::color::storage::Storage::Bits24,
+                    storage: crate::core::color::storage::Storage::Bits24,
                 });
             }
         }
@@ -68,24 +68,24 @@ impl Color {
 
     pub fn to_storage(
         &self,
-        storage: crate::base::color::storage::Storage,
+        storage: crate::core::color::storage::Storage,
     ) -> Option<Color> {
         match (self.storage, storage) {
-            (_, crate::base::color::storage::Storage::Bits1) => Some(Color {
+            (_, crate::core::color::storage::Storage::Bits1) => Some(Color {
                 code:    None,
                 rgb:     None,
-                storage: crate::base::color::storage::Storage::Bits1,
+                storage: crate::core::color::storage::Storage::Bits1,
             }),
 
             (
-                crate::base::color::storage::Storage::Bits24,
-                crate::base::color::storage::Storage::Bits8,
+                crate::core::color::storage::Storage::Bits24,
+                crate::core::color::storage::Storage::Bits8,
             ) => match self.rgb {
                 Some((r, g, b)) => {
                     let (rn, gn, bn) =
-                        crate::base::color::model::rgb_to_rgbn(r, g, b);
+                        crate::core::color::model::rgb_to_rgbn(r, g, b);
                     let (_, s, l) =
-                        crate::base::color::model::rgbn_to_hsl(rn, gn, bn);
+                        crate::core::color::model::rgbn_to_hsl(rn, gn, bn);
 
                     Some(Color {
                         code:    Some(if s < 0.08 {
@@ -103,26 +103,26 @@ impl Color {
                                 as u8
                         }),
                         rgb:     None,
-                        storage: crate::base::color::storage::Storage::Bits8,
+                        storage: crate::core::color::storage::Storage::Bits8,
                     })
                 },
                 None => None,
             },
             (
-                crate::base::color::storage::Storage::Bits24,
-                crate::base::color::storage::Storage::Bits4,
+                crate::core::color::storage::Storage::Bits24,
+                crate::core::color::storage::Storage::Bits4,
             ) => None,
-            (crate::base::color::storage::Storage::Bits24, _) => Some(*self),
+            (crate::core::color::storage::Storage::Bits24, _) => Some(*self),
 
             (
-                crate::base::color::storage::Storage::Bits8,
-                crate::base::color::storage::Storage::Bits4,
+                crate::core::color::storage::Storage::Bits8,
+                crate::core::color::storage::Storage::Bits4,
             ) => None,
-            (crate::base::color::storage::Storage::Bits8, _) => Some(*self),
+            (crate::core::color::storage::Storage::Bits8, _) => Some(*self),
 
-            (crate::base::color::storage::Storage::Bits4, _) => Some(*self),
+            (crate::core::color::storage::Storage::Bits4, _) => Some(*self),
 
-            (crate::base::color::storage::Storage::Bits1, _) => Some(*self),
+            (crate::core::color::storage::Storage::Bits1, _) => Some(*self),
         }
     }
 
@@ -132,13 +132,13 @@ impl Color {
     ) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
-                storage: crate::base::color::storage::Storage::Bits1,
+                storage: crate::core::color::storage::Storage::Bits1,
                 ..
             } => Ok(vec![if foreground { 39 } else { 49 }]),
 
             Color {
                 code: Some(code),
-                storage: crate::base::color::storage::Storage::Bits4,
+                storage: crate::core::color::storage::Storage::Bits4,
                 ..
             } => match code {
                 0..=7 => Ok(vec![code + if foreground { 30 } else { 40 }]),
@@ -148,13 +148,13 @@ impl Color {
 
             Color {
                 code: Some(code),
-                storage: crate::base::color::storage::Storage::Bits8,
+                storage: crate::core::color::storage::Storage::Bits8,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 5, *code]),
 
             Color {
                 rgb: Some((r, g, b)),
-                storage: crate::base::color::storage::Storage::Bits24,
+                storage: crate::core::color::storage::Storage::Bits24,
                 ..
             } => Ok(vec![if foreground { 38 } else { 48 }, 2, *r, *g, *b]),
 
@@ -173,7 +173,7 @@ mod test_color {
         let expected = Color {
             code:    None,
             rgb:     None,
-            storage: crate::base::color::storage::Storage::Bits1,
+            storage: crate::core::color::storage::Storage::Bits1,
         };
         assert_eq!(color, expected);
 
@@ -187,7 +187,7 @@ mod test_color {
         let expected = Color {
             code:    Some(0),
             rgb:     None,
-            storage: crate::base::color::storage::Storage::Bits4,
+            storage: crate::core::color::storage::Storage::Bits4,
         };
         assert_eq!(color, expected);
 
@@ -201,7 +201,7 @@ mod test_color {
         let expected = Color {
             code:    Some(8),
             rgb:     None,
-            storage: crate::base::color::storage::Storage::Bits4,
+            storage: crate::core::color::storage::Storage::Bits4,
         };
         assert_eq!(color, expected);
 
@@ -215,7 +215,7 @@ mod test_color {
         let expected = Color {
             code:    Some(16),
             rgb:     None,
-            storage: crate::base::color::storage::Storage::Bits8,
+            storage: crate::core::color::storage::Storage::Bits8,
         };
         assert_eq!(color, expected);
 
@@ -229,7 +229,7 @@ mod test_color {
         let expected = Color {
             code:    None,
             rgb:     Some((255, 128, 0)),
-            storage: crate::base::color::storage::Storage::Bits24,
+            storage: crate::core::color::storage::Storage::Bits24,
         };
         assert_eq!(color, expected);
 
@@ -239,10 +239,10 @@ mod test_color {
         let color_8 = Color {
             code:    Some(214),
             rgb:     None,
-            storage: crate::base::color::storage::Storage::Bits8,
+            storage: crate::core::color::storage::Storage::Bits8,
         };
         assert_eq!(
-            color.to_storage(crate::base::color::storage::Storage::Bits8),
+            color.to_storage(crate::core::color::storage::Storage::Bits8),
             Some(color_8)
         );
     }

@@ -10,5 +10,5 @@
 #![deny(rustdoc::missing_crate_level_docs)]
 #![deny(rustdoc::private_intra_doc_links)]
 
-pub mod base;
 pub mod components;
+pub mod core;

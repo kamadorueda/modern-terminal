@@ -1,8 +1,8 @@
 extern crate modern_terminal;
 
 use modern_terminal::{
-    base::console::Console,
     components::color_palette::ColorPalette,
+    core::console::Console,
 };
 
 fn main() -> std::io::Result<()> {

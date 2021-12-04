@@ -2,8 +2,8 @@ pub struct Console<'a, W>
 where
     W: std::io::Write,
 {
-    options: crate::base::render::Options,
-    storage: Option<crate::base::color::storage::Storage>,
+    options: crate::core::render::Options,
+    storage: Option<crate::core::color::storage::Storage>,
     writer:  &'a mut W,
 }
 
@@ -16,7 +16,7 @@ where
         component: &R,
     ) -> std::io::Result<()>
     where
-        R: crate::base::render::Render,
+        R: crate::core::render::Render,
     {
         for segment in component.render(&self.options).iter() {
             let text = match self.storage {
@@ -40,7 +40,7 @@ where
         let tty_size = tty_size(writer);
 
         Console {
-            options: crate::base::render::Options {
+            options: crate::core::render::Options {
                 is_tty,
                 columns: tty_size.0,
                 rows: tty_size.1,
@@ -57,18 +57,18 @@ where
 {
     pub fn from_writer(
         writer: &mut W,
-        options: crate::base::render::Options,
-        storage: Option<crate::base::color::storage::Storage>,
+        options: crate::core::render::Options,
+        storage: Option<crate::core::color::storage::Storage>,
     ) -> Console<W> {
         Console { options, storage, writer }
     }
 }
 
-fn detect_storage() -> Option<crate::base::color::storage::Storage> {
+fn detect_storage() -> Option<crate::core::color::storage::Storage> {
     if let Ok(term) = std::env::var("COLORTERM") {
         let term = term.trim().to_lowercase();
         if &term == "24bit" || &term == "truecolor" {
-            return Some(crate::base::color::storage::Storage::Bits24);
+            return Some(crate::core::color::storage::Storage::Bits24);
         }
     }
 
@@ -78,10 +78,10 @@ fn detect_storage() -> Option<crate::base::color::storage::Storage> {
                 return None;
             }
             else if term == "16color" {
-                return Some(crate::base::color::storage::Storage::Bits4);
+                return Some(crate::core::color::storage::Storage::Bits4);
             }
             else if term == "256color" {
-                return Some(crate::base::color::storage::Storage::Bits8);
+                return Some(crate::core::color::storage::Storage::Bits8);
             }
         }
     }
@@ -132,7 +132,7 @@ mod test_console {
 
     #[test]
     fn from_writer() {
-        let options = crate::base::render::Options {
+        let options = crate::core::render::Options {
             columns: 80,
             is_tty:  false,
             rows:    25,

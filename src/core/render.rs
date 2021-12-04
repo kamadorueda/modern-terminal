@@ -1,7 +1,7 @@
 #[derive(Debug)]
 pub struct Segment {
     pub text:  String,
-    pub style: crate::base::style::Style,
+    pub style: crate::core::style::Style,
 }
 
 pub type Segments = Vec<Segment>;

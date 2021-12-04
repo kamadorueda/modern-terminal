@@ -1,26 +1,26 @@
 pub struct Text {
-    style: crate::base::style::Style,
+    style: crate::core::style::Style,
     text:  String,
 }
 
 impl Text {
     pub fn new(
         text: String,
-        style: crate::base::style::Style,
+        style: crate::core::style::Style,
     ) -> Text {
         Text { style, text }
     }
 }
 
-impl crate::base::render::Render for Text {
+impl crate::core::render::Render for Text {
     fn render(
         &self,
-        options: &crate::base::render::Options,
-    ) -> crate::base::render::Segments {
+        options: &crate::core::render::Options,
+    ) -> crate::core::render::Segments {
         let mut segments = Vec::new();
 
         for line in wrap(&self.text, options.columns, options.rows) {
-            segments.push(crate::base::render::Segment {
+            segments.push(crate::core::render::Segment {
                 text:  line,
                 style: self.style,
             });
