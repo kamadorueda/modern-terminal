@@ -1,6 +1,6 @@
 pub struct Text {
-    style: crate::core::style::Style,
-    text:  String,
+    pub style: crate::core::style::Style,
+    pub text:  String,
 }
 
 impl Text {

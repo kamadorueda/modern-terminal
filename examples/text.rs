@@ -15,7 +15,7 @@ fn main() -> std::io::Result<()> {
         let style = Style::new().foreground(color).bold();
         let text = lipsum(16);
 
-        let component = Text::new(text, style);
+        let component = Text { text, style };
 
         console.render(&component)?;
     }
