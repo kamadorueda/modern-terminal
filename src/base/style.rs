@@ -1,4 +1,4 @@
-#[derive(Clone, Copy)]
+#[derive(Clone, Debug, Copy)]
 pub struct Style {
     background: Option<crate::base::color::Color>,
     bold:       Option<bool>,
@@ -28,19 +28,29 @@ impl Style {
         }
     }
 
-    pub fn reset_background(&self) -> Style { self.background("default") }
+    pub fn reset_background(&self) -> Style {
+        self.background("default")
+    }
 }
 
 impl Style {
-    pub fn bold(&self) -> Style { Style { bold: Some(true), ..*self } }
+    pub fn bold(&self) -> Style {
+        Style { bold: Some(true), ..*self }
+    }
 
-    pub fn not_bold(&self) -> Style { Style { bold: Some(false), ..*self } }
+    pub fn not_bold(&self) -> Style {
+        Style { bold: Some(false), ..*self }
+    }
 }
 
 impl Style {
-    pub fn dim(&self) -> Style { Style { dim: Some(true), ..*self } }
+    pub fn dim(&self) -> Style {
+        Style { dim: Some(true), ..*self }
+    }
 
-    pub fn not_dim(&self) -> Style { Style { dim: Some(false), ..*self } }
+    pub fn not_dim(&self) -> Style {
+        Style { dim: Some(false), ..*self }
+    }
 }
 
 impl Style {
@@ -54,7 +64,9 @@ impl Style {
         }
     }
 
-    pub fn reset_foreground(&self) -> Style { self.foreground("default") }
+    pub fn reset_foreground(&self) -> Style {
+        self.foreground("default")
+    }
 }
 
 impl Style {

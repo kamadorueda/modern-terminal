@@ -20,7 +20,10 @@ impl crate::base::render::Render for Text {
         let mut segments = Vec::new();
 
         for line in wrap(&self.text, options.columns, options.rows) {
-            segments.push((line, self.style));
+            segments.push(crate::base::render::Segment {
+                text:  line,
+                style: self.style,
+            });
         }
 
         segments
@@ -41,8 +44,7 @@ fn wrap(
         });
         let line = format!("{:columns$}", line, columns = columns);
         if lines.len() < rows {
-            lines.push(line);
-            lines.push(String::from("\n"));
+            lines.push(format!("{}\n", line));
         }
     }
 
@@ -56,7 +58,8 @@ mod tests {
     #[test]
     fn test_wrap() {
         assert_eq!(wrap("0123456789 01234 56789 012", 4, 7), vec![
-            "0123", "4567", "89  ", "0123", "4   ", "5678", "9   "
+            "0123\n", "4567\n", "89  \n", "0123\n", "4   \n", "5678\n",
+            "9   \n"
         ],);
     }
 }

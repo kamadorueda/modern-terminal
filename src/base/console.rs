@@ -18,10 +18,10 @@ where
     where
         R: crate::base::render::Render,
     {
-        for (text, style) in component.render(&self.options).iter() {
+        for segment in component.render(&self.options).iter() {
             let text = match self.storage {
-                Some(storage) => style.render(text, storage),
-                None => text.to_string(),
+                Some(storage) => segment.style.render(&segment.text, storage),
+                None => segment.text.to_string(),
             };
 
             self.writer.write(text.as_bytes())?;

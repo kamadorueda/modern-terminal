@@ -1,7 +1,9 @@
 pub struct ColorPalette {}
 
 impl ColorPalette {
-    pub fn new() -> ColorPalette { ColorPalette {} }
+    pub fn new() -> ColorPalette {
+        ColorPalette {}
+    }
 }
 
 impl crate::base::render::Render for ColorPalette {
@@ -23,15 +25,17 @@ impl crate::base::render::Render for ColorPalette {
                 let (r, g, b) =
                     crate::base::color::model::hsl_to_rgb(360.0 * h, 1.0, l);
 
-                segments.push((
-                    String::from(" "),
-                    crate::base::style::Style::new()
+                segments.push(crate::base::render::Segment {
+                    text:  String::from(" "),
+                    style: crate::base::style::Style::new()
                         .background(&format!("rgb({}, {}, {})", r, g, b)),
-                ));
+                });
             }
 
-            segments
-                .push((String::from("\n"), crate::base::style::Style::new()));
+            segments.push(crate::base::render::Segment {
+                text:  String::from("\n"),
+                style: crate::base::style::Style::new(),
+            });
         }
 
         segments

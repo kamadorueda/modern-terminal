@@ -1,4 +1,9 @@
-pub type Segment = (String, crate::base::style::Style);
+#[derive(Debug)]
+pub struct Segment {
+    pub text:  String,
+    pub style: crate::base::style::Style,
+}
+
 pub type Segments = Vec<Segment>;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
