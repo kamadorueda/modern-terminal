@@ -8,9 +8,14 @@ impl crate::core::render::Render for Text {
         &self,
         options: &crate::core::render::Options,
     ) -> crate::core::segment::Segments {
+        let columns = match options.columns {
+            Some(columns) => columns,
+            None => crate::core::render::DEFAULT_COLUMNS,
+        };
+
         let mut segments = Vec::new();
 
-        for line in wrap(&self.text, options.columns, options.rows) {
+        for line in wrap(&self.text, columns, options.rows) {
             let mut segment = crate::core::segment::Segment::new();
             for style in self.styles.iter() {
                 segment.add_style(style.clone());
@@ -26,7 +31,7 @@ impl crate::core::render::Render for Text {
 fn wrap(
     text: &str,
     columns: usize,
-    rows: usize,
+    rows: Option<usize>,
 ) -> Vec<String> {
     let mut lines = Vec::new();
 
@@ -35,9 +40,16 @@ fn wrap(
             std::borrow::Cow::Borrowed(line) => *line,
             std::borrow::Cow::Owned(line) => line,
         });
-        if lines.len() < rows {
-            lines.push(line);
-        }
+        match rows {
+            Some(rows) => {
+                if lines.len() < rows {
+                    lines.push(line);
+                }
+            },
+            None => {
+                lines.push(line);
+            },
+        };
     }
 
     lines
@@ -49,8 +61,13 @@ mod tests {
 
     #[test]
     fn test_wrap() {
-        assert_eq!(wrap("0123456789 01234 56789 012", 4, 7), vec![
+        let text = "0123456789 01234 56789 012";
+
+        assert_eq!(wrap(text, 4, Some(7)), vec![
             "0123", "4567", "89", "0123", "4", "5678", "9"
+        ],);
+        assert_eq!(wrap(text, 4, None), vec![
+            "0123", "4567", "89", "0123", "4", "5678", "9", "012"
         ],);
     }
 }

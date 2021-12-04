@@ -38,8 +38,8 @@ where
         Console {
             options: crate::core::render::Options {
                 is_tty,
-                columns: tty_size.0,
-                rows: tty_size.1,
+                columns: Some(tty_size.0),
+                rows: Some(tty_size.1),
             },
             storage: detect_storage(),
             writer,
@@ -112,7 +112,10 @@ where
         (size.ws_col.into(), size.ws_row.into())
     }
     else {
-        (80, 25)
+        (
+            crate::core::render::DEFAULT_COLUMNS,
+            crate::core::render::DEFAULT_ROWS,
+        )
     }
 }
 
@@ -129,9 +132,9 @@ mod test_console {
     #[test]
     fn from_writer() {
         let options = crate::core::render::Options {
-            columns: 80,
+            columns: Some(crate::core::render::DEFAULT_COLUMNS),
             is_tty:  false,
-            rows:    25,
+            rows:    Some(crate::core::render::DEFAULT_ROWS),
         };
         let mut writer = std::io::Cursor::new(Vec::new());
         let console = Console::from_writer(&mut writer, options, None);

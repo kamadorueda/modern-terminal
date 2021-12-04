@@ -11,16 +11,25 @@ impl crate::core::render::Render for ColorPalette {
         &self,
         options: &crate::core::render::Options,
     ) -> crate::core::segment::Segments {
+        let columns = match options.columns {
+            Some(columns) => columns,
+            None => crate::core::render::DEFAULT_COLUMNS,
+        };
+        let rows = match options.rows {
+            Some(rows) => rows,
+            None => crate::core::render::DEFAULT_ROWS,
+        };
+
         let mut segments = Vec::new();
-        segments.reserve(options.rows);
+        segments.reserve(rows);
 
-        for row in 0..(options.rows) {
+        for row in 0..(rows) {
             let mut segment = crate::core::segment::Segment::new();
-            segment.parts.reserve(options.columns);
+            segment.parts.reserve(columns);
 
-            for column in 0..(options.columns) {
-                let col_r = (column as f64) / ((options.columns - 1) as f64);
-                let row_r = (row as f64) / ((options.rows - 1) as f64);
+            for column in 0..(columns) {
+                let col_r = (column as f64) / ((columns - 1) as f64);
+                let row_r = (row as f64) / ((rows - 1) as f64);
 
                 let l = col_r;
                 let h = (1.0 - 0.75 * row_r + 0.25 * col_r) / 0.75 % 1.0;

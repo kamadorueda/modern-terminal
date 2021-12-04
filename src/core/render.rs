@@ -1,8 +1,11 @@
+pub const DEFAULT_COLUMNS: usize = 80;
+pub const DEFAULT_ROWS: usize = 20;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Options {
-    pub columns: usize,
+    pub columns: Option<usize>,
     pub is_tty:  bool,
-    pub rows:    usize,
+    pub rows:    Option<usize>,
 }
 
 pub trait Render {
