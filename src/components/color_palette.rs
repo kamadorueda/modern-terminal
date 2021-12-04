@@ -10,11 +10,14 @@ impl crate::core::render::Render for ColorPalette {
     fn render(
         &self,
         options: &crate::core::render::Options,
-    ) -> crate::core::render::Segments {
+    ) -> crate::core::segment::Segments {
         let mut segments = Vec::new();
-        segments.reserve((1 + options.rows) * options.columns);
+        segments.reserve(options.rows);
 
         for row in 0..(options.rows) {
+            let mut segment = crate::core::segment::Segment::new();
+            segment.parts.reserve(options.columns);
+
             for column in 0..(options.columns) {
                 let col_r = (column as f64) / ((options.columns - 1) as f64);
                 let row_r = (row as f64) / ((options.rows - 1) as f64);
@@ -25,17 +28,13 @@ impl crate::core::render::Render for ColorPalette {
                 let (r, g, b) =
                     crate::core::color::model::hsl_to_rgb(360.0 * h, 1.0, l);
 
-                segments.push(crate::core::render::Segment {
-                    text:  String::from(" "),
-                    style: crate::core::style::Style::new()
-                        .background(&format!("rgb({}, {}, {})", r, g, b)),
-                });
+                segment.add_style(crate::core::style::Style::Background(
+                    format!("rgb({}, {}, {})", r, g, b),
+                ));
+                segment.add_text(" ");
             }
 
-            segments.push(crate::core::render::Segment {
-                text:  String::from("\n"),
-                style: crate::core::style::Style::new(),
-            });
+            segments.push(segment);
         }
 
         segments

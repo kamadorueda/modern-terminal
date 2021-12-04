@@ -11,11 +11,15 @@ fn main() -> std::io::Result<()> {
     let mut writer = std::io::stdout();
     let mut console = Console::from_fd(&mut writer);
 
-    for color in ["green", "yellow", "blue", "red"] {
-        let style = Style::new().foreground(color).bold();
-        let text = lipsum(16);
-
-        let component = Text { text, style };
+    for color in ["bright_green", "#FFFF00", "blue", "rgb(255, 0, 0)"] {
+        let component = Text {
+            text:   lipsum(16),
+            styles: vec![
+                Style::Bold,
+                Style::Foreground(color.to_string()),
+                Style::Background("black".to_string()),
+            ],
+        };
 
         console.render(&component)?;
     }

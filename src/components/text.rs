@@ -1,29 +1,22 @@
 pub struct Text {
-    pub style: crate::core::style::Style,
-    pub text:  String,
-}
-
-impl Text {
-    pub fn new(
-        text: String,
-        style: crate::core::style::Style,
-    ) -> Text {
-        Text { style, text }
-    }
+    pub styles: Vec<crate::core::style::Style>,
+    pub text:   String,
 }
 
 impl crate::core::render::Render for Text {
     fn render(
         &self,
         options: &crate::core::render::Options,
-    ) -> crate::core::render::Segments {
+    ) -> crate::core::segment::Segments {
         let mut segments = Vec::new();
 
         for line in wrap(&self.text, options.columns, options.rows) {
-            segments.push(crate::core::render::Segment {
-                text:  line,
-                style: self.style,
-            });
+            let mut segment = crate::core::segment::Segment::new();
+            for style in self.styles.iter() {
+                segment.add_style(style.clone());
+            }
+            segment.add_text(&line);
+            segments.push(segment);
         }
 
         segments
@@ -42,9 +35,8 @@ fn wrap(
             std::borrow::Cow::Borrowed(line) => *line,
             std::borrow::Cow::Owned(line) => line,
         });
-        let line = format!("{:columns$}", line, columns = columns);
         if lines.len() < rows {
-            lines.push(format!("{}\n", line));
+            lines.push(line);
         }
     }
 
@@ -58,8 +50,7 @@ mod tests {
     #[test]
     fn test_wrap() {
         assert_eq!(wrap("0123456789 01234 56789 012", 4, 7), vec![
-            "0123\n", "4567\n", "89  \n", "0123\n", "4   \n", "5678\n",
-            "9   \n"
+            "0123", "4567", "89", "0123", "4", "5678", "9"
         ],);
     }
 }

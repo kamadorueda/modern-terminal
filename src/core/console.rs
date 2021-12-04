@@ -19,12 +19,8 @@ where
         R: crate::core::render::Render,
     {
         for segment in component.render(&self.options).iter() {
-            let text = match self.storage {
-                Some(storage) => segment.style.render(&segment.text, storage),
-                None => segment.text.to_string(),
-            };
-
-            self.writer.write(text.as_bytes())?;
+            self.writer.write(segment.render(self.storage).as_bytes())?;
+            self.writer.write(b"\n")?;
         }
 
         Ok(())
