@@ -1,4 +1,11 @@
+pub enum TextAlignment {
+    Center,
+    Left,
+    Right,
+}
+
 pub struct Text {
+    pub align:  TextAlignment,
     pub styles: Vec<crate::core::style::Style>,
     pub text:   String,
 }
@@ -7,13 +14,13 @@ impl crate::core::render::Render for Text {
     fn render(
         &self,
         options: &crate::core::render::Options,
-    ) -> crate::core::segment::Segments {
+    ) -> crate::core::segment::RenderedSegments {
         let columns = match options.columns {
             Some(columns) => columns,
             None => crate::core::render::DEFAULT_COLUMNS,
         };
 
-        let mut segments = Vec::new();
+        let mut rendered_segments = Vec::new();
 
         for line in wrap(&self.text, columns, options.rows) {
             let mut segment = crate::core::segment::Segment::new();
@@ -21,10 +28,23 @@ impl crate::core::render::Render for Text {
                 segment.add_style(style.clone());
             }
             segment.add_text(&line);
-            segments.push(segment);
+            rendered_segments.push(segment.render(
+                match self.align {
+                    TextAlignment::Center => {
+                        crate::core::segment::SegmentPadding::Center(columns)
+                    },
+                    TextAlignment::Left => {
+                        crate::core::segment::SegmentPadding::Left(columns)
+                    },
+                    TextAlignment::Right => {
+                        crate::core::segment::SegmentPadding::Right(columns)
+                    },
+                },
+                options.storage,
+            ));
         }
 
-        segments
+        rendered_segments
     }
 }
 

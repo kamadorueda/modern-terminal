@@ -3,7 +3,7 @@ extern crate modern_terminal;
 
 use lipsum::lipsum;
 use modern_terminal::{
-    components::text::Text,
+    components::text::{Text, TextAlignment},
     core::{console::Console, style::Style},
 };
 
@@ -13,11 +13,12 @@ fn main() -> std::io::Result<()> {
 
     for color in ["bright_green", "#FFFF00", "blue", "rgb(255, 0, 0)"] {
         let component = Text {
+            align:  TextAlignment::Center,
             text:   lipsum(16),
             styles: vec![
                 Style::Bold,
                 Style::Foreground(color.to_string()),
-                Style::Background("black".to_string()),
+                Style::Background("grey23".to_string()),
             ],
         };
 

@@ -3,7 +3,6 @@ where
     W: std::io::Write,
 {
     options: crate::core::render::Options,
-    storage: Option<crate::core::color::storage::Storage>,
     writer:  &'a mut W,
 }
 
@@ -19,9 +18,7 @@ where
         R: crate::core::render::Render,
     {
         for segment in component.render(&self.options).iter() {
-            self.writer.write(
-                segment.render(self.options.padding, self.storage).as_bytes(),
-            )?;
+            self.writer.write(segment.as_bytes())?;
             self.writer.write(b"\n")?;
         }
 
@@ -41,10 +38,9 @@ where
             options: crate::core::render::Options {
                 is_tty,
                 columns: Some(tty_size.0),
-                padding: crate::core::segment::SegmentPadding::None,
                 rows: Some(tty_size.1),
+                storage: detect_storage(),
             },
-            storage: detect_storage(),
             writer,
         }
     }
@@ -57,9 +53,8 @@ where
     pub fn from_writer(
         writer: &mut W,
         options: crate::core::render::Options,
-        storage: Option<crate::core::color::storage::Storage>,
     ) -> Console<W> {
-        Console { options, storage, writer }
+        Console { options, writer }
     }
 }
 
@@ -137,14 +132,13 @@ mod test_console {
         let options = crate::core::render::Options {
             columns: Some(crate::core::render::DEFAULT_COLUMNS),
             is_tty:  false,
-            padding: crate::core::segment::SegmentPadding::None,
+            storage: None,
             rows:    Some(crate::core::render::DEFAULT_ROWS),
         };
         let mut writer = std::io::Cursor::new(Vec::new());
-        let console = Console::from_writer(&mut writer, options, None);
+        let console = Console::from_writer(&mut writer, options);
         let mut writer = std::io::Cursor::new(Vec::new());
-        let expected = Console { options, storage: None, writer: &mut writer };
+        let expected = Console { options, writer: &mut writer };
         assert_eq!(console.options, expected.options);
-        assert_eq!(console.storage, expected.storage);
     }
 }

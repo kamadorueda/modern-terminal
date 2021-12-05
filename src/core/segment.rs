@@ -17,7 +17,7 @@ pub struct Segment {
     pub portions: Vec<SegmentPortion>,
 }
 
-pub type Segments = Vec<Segment>;
+pub type RenderedSegments = Vec<String>;
 
 impl Segment {
     pub fn new() -> Segment {
@@ -61,31 +61,27 @@ impl Segment {
             })
             .sum();
 
-        let mut begin_pad_applied = false;
+        match padding {
+            SegmentPadding::Center(desired_length) => {
+                if desired_length > rendered_length {
+                    rendered.push_str(&whitespace(
+                        (desired_length - rendered_length) / 2,
+                    ));
+                };
+            },
+            SegmentPadding::Right(desired_length) => {
+                if desired_length > rendered_length {
+                    rendered.push_str(&whitespace(
+                        desired_length - rendered_length,
+                    ));
+                }
+            },
+            _ => {},
+        };
 
         for portion in self.portions.iter() {
             match portion {
                 SegmentPortion::Text(text) => {
-                    if !begin_pad_applied {
-                        match padding {
-                            SegmentPadding::Center(desired_length) => {
-                                if desired_length > rendered_length {
-                                    rendered.push_str(&whitespace(
-                                        (desired_length - rendered_length) / 2,
-                                    ));
-                                };
-                            },
-                            SegmentPadding::Right(desired_length) => {
-                                if desired_length > rendered_length {
-                                    rendered.push_str(&whitespace(
-                                        desired_length - rendered_length,
-                                    ));
-                                }
-                            },
-                            _ => {},
-                        };
-                        begin_pad_applied = true;
-                    };
                     rendered.push_str(&text);
                 },
                 SegmentPortion::Style(style) => match storage {
@@ -96,6 +92,13 @@ impl Segment {
                 },
             }
         }
+
+        match storage {
+            Some(storage) => rendered.push_str(
+                &crate::core::style::Style::None.ansi_escape_code(storage),
+            ),
+            None => (),
+        };
 
         match padding {
             SegmentPadding::Left(desired_length) => {
@@ -144,7 +147,7 @@ mod test_segment {
                 SegmentPadding::Center(9),
                 Some(crate::core::color::storage::Storage::Bits24)
             ),
-            "\u{1b}[1m a b c d "
+            " \u{1b}[1ma b c d\u{1b}[0m "
         );
     }
 }

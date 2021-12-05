@@ -5,13 +5,13 @@ pub const DEFAULT_ROWS: usize = 20;
 pub struct Options {
     pub columns: Option<usize>,
     pub is_tty:  bool,
-    pub padding: crate::core::segment::SegmentPadding,
     pub rows:    Option<usize>,
+    pub storage: Option<crate::core::color::storage::Storage>,
 }
 
 pub trait Render {
     fn render(
         &self,
         options: &Options,
-    ) -> crate::core::segment::Segments;
+    ) -> crate::core::segment::RenderedSegments;
 }

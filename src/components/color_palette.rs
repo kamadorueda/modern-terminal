@@ -10,7 +10,7 @@ impl crate::core::render::Render for ColorPalette {
     fn render(
         &self,
         options: &crate::core::render::Options,
-    ) -> crate::core::segment::Segments {
+    ) -> crate::core::segment::RenderedSegments {
         let columns = match options.columns {
             Some(columns) => columns,
             None => crate::core::render::DEFAULT_COLUMNS,
@@ -20,8 +20,8 @@ impl crate::core::render::Render for ColorPalette {
             None => crate::core::render::DEFAULT_ROWS,
         };
 
-        let mut segments = Vec::new();
-        segments.reserve(rows);
+        let mut rendered_segments = Vec::new();
+        rendered_segments.reserve(rows);
 
         for row in 0..(rows) {
             let mut segment = crate::core::segment::Segment::new();
@@ -43,9 +43,12 @@ impl crate::core::render::Render for ColorPalette {
                 segment.add_text(" ");
             }
 
-            segments.push(segment);
+            rendered_segments.push(segment.render(
+                crate::core::segment::SegmentPadding::None,
+                options.storage,
+            ));
         }
 
-        segments
+        rendered_segments
     }
 }
