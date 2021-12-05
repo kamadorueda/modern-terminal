@@ -1,6 +1,17 @@
 **Modern Terminal** is a Rust library
 for rich text and beautiful formatting.
 
+Its API makes it easy to add
+![c](https://img.shields.io/badge/c-FF0000)
+![o](https://img.shields.io/badge/o-FFFF00)
+![l](https://img.shields.io/badge/l-00FF00)
+![o](https://img.shields.io/badge/o-00FFFF)
+![r](https://img.shields.io/badge/r-0000FF)
+![s](https://img.shields.io/badge/s-FF00FF)
+and *<sub>s</sub>t**y**l<sup>e</sup>* to terminal output,
+and provides awesome components
+for building delightful interactions.
+
 Users of your command line applications are simply going to love it ❤️
 
 [![](https://img.shields.io/crates/v/modern-terminal?color=green)](
@@ -15,7 +26,7 @@ syntax highlighted source code,
 tracebacks,
 and more — out of the box. -->
 
-# Modern Terminal By Example
+# Components
 
 ## Color Palette
 

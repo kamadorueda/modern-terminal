@@ -31,11 +31,11 @@ impl crate::core::render::Render for ColorPalette {
                 let col_r = (column as f64) / ((columns - 1) as f64);
                 let row_r = (row as f64) / ((rows - 1) as f64);
 
-                let l = col_r;
-                let h = (1.0 - 0.75 * row_r + 0.25 * col_r) / 0.75 % 1.0;
-
-                let (r, g, b) =
-                    crate::core::color::model::hsl_to_rgb(360.0 * h, 1.0, l);
+                let (r, g, b) = crate::core::color::model::hsl_to_rgb(
+                    360.0 * col_r,
+                    1.0,
+                    0.1 + 0.7 * row_r,
+                );
 
                 segment.add_style(crate::core::style::Style::Background(
                     format!("rgb({}, {}, {})", r, g, b),

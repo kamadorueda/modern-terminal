@@ -14,13 +14,13 @@ for example in examples/*.rs; do
 
   asciinema rec \
     --command="
-      echo $ cat examples/${example}.rs
-      echo
-      bat --paging=never --style plain,numbers examples/${example}.rs
-      echo
       echo $ cargo run --example ${example}
       echo
       target/release/examples/${example}
+      echo
+      echo $ cat examples/${example}.rs
+      echo
+      bat --paging=never --style plain,numbers examples/${example}.rs
       echo
     " \
     --overwrite \
