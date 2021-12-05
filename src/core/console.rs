@@ -19,7 +19,9 @@ where
         R: crate::core::render::Render,
     {
         for segment in component.render(&self.options).iter() {
-            self.writer.write(segment.render(self.storage).as_bytes())?;
+            self.writer.write(
+                segment.render(self.options.padding, self.storage).as_bytes(),
+            )?;
             self.writer.write(b"\n")?;
         }
 
@@ -39,6 +41,7 @@ where
             options: crate::core::render::Options {
                 is_tty,
                 columns: Some(tty_size.0),
+                padding: crate::core::segment::SegmentPadding::None,
                 rows: Some(tty_size.1),
             },
             storage: detect_storage(),
@@ -134,6 +137,7 @@ mod test_console {
         let options = crate::core::render::Options {
             columns: Some(crate::core::render::DEFAULT_COLUMNS),
             is_tty:  false,
+            padding: crate::core::segment::SegmentPadding::None,
             rows:    Some(crate::core::render::DEFAULT_ROWS),
         };
         let mut writer = std::io::Cursor::new(Vec::new());

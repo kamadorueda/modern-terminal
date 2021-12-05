@@ -5,6 +5,7 @@ pub const DEFAULT_ROWS: usize = 20;
 pub struct Options {
     pub columns: Option<usize>,
     pub is_tty:  bool,
+    pub padding: crate::core::segment::SegmentPadding,
     pub rows:    Option<usize>,
 }
 

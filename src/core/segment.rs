@@ -1,70 +1,150 @@
-#[derive(Debug)]
-pub enum Part {
-    Text(String),
+#[derive(Clone, Debug)]
+pub enum SegmentPortion {
     Style(crate::core::style::Style),
+    Text(String),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum SegmentPadding {
+    Center(usize),
+    Left(usize),
+    None,
+    Right(usize),
+}
+
+#[derive(Clone, Debug)]
 pub struct Segment {
-    pub parts: Vec<Part>,
+    pub portions: Vec<SegmentPortion>,
 }
 
 pub type Segments = Vec<Segment>;
 
 impl Segment {
     pub fn new() -> Segment {
-        Segment { parts: vec![] }
+        Segment { portions: vec![] }
+    }
+
+    pub fn add_segment(
+        &mut self,
+        segment: &Segment,
+    ) {
+        self.portions.extend(segment.portions.clone());
     }
 
     pub fn add_text(
         &mut self,
         text: &str,
     ) {
-        self.parts.push(Part::Text(String::from(text)));
+        self.portions.push(SegmentPortion::Text(String::from(text)));
     }
 
     pub fn add_style(
         &mut self,
         style: crate::core::style::Style,
     ) {
-        self.parts.push(Part::Style(style));
+        self.portions.push(SegmentPortion::Style(style));
     }
 
     pub fn render(
         &self,
+        padding: SegmentPadding,
         storage: Option<crate::core::color::storage::Storage>,
     ) -> String {
-        self.parts
+        let mut rendered = String::new();
+
+        let rendered_length: usize = self
+            .portions
             .iter()
-            .map(|part| match storage {
-                Some(storage) => match part {
-                    Part::Text(text) => text.clone(),
-                    Part::Style(style) => style.ansi_escape_code(storage),
-                },
-                None => match part {
-                    Part::Text(text) => text.clone(),
-                    Part::Style(_) => String::new(),
-                },
+            .map(|portion| match portion {
+                SegmentPortion::Text(text) => text.len(),
+                SegmentPortion::Style(_) => 0,
             })
-            .collect::<Vec<String>>()
-            .join("")
+            .sum();
+
+        let mut begin_pad_applied = false;
+
+        for portion in self.portions.iter() {
+            match portion {
+                SegmentPortion::Text(text) => {
+                    if !begin_pad_applied {
+                        match padding {
+                            SegmentPadding::Center(desired_length) => {
+                                if desired_length > rendered_length {
+                                    rendered.push_str(&whitespace(
+                                        (desired_length - rendered_length) / 2,
+                                    ));
+                                };
+                            },
+                            SegmentPadding::Right(desired_length) => {
+                                if desired_length > rendered_length {
+                                    rendered.push_str(&whitespace(
+                                        desired_length - rendered_length,
+                                    ));
+                                }
+                            },
+                            _ => {},
+                        };
+                        begin_pad_applied = true;
+                    };
+                    rendered.push_str(&text);
+                },
+                SegmentPortion::Style(style) => match storage {
+                    Some(storage) => {
+                        rendered.push_str(&style.ansi_escape_code(storage));
+                    },
+                    None => {},
+                },
+            }
+        }
+
+        match padding {
+            SegmentPadding::Left(desired_length) => {
+                if desired_length > rendered_length {
+                    rendered.push_str(&whitespace(
+                        desired_length - rendered_length,
+                    ));
+                }
+            },
+            SegmentPadding::Center(desired_length) => {
+                if desired_length > rendered_length {
+                    rendered.push_str(&whitespace(
+                        desired_length
+                            - rendered_length
+                            - (desired_length - rendered_length) / 2,
+                    ));
+                }
+            },
+            _ => {},
+        }
+
+        rendered
     }
+}
+
+fn whitespace(length: usize) -> String {
+    std::iter::repeat(" ").take(length).collect::<String>()
 }
 
 #[cfg(test)]
 mod test_segment {
-    use super::Segment;
+    use super::{Segment, SegmentPadding};
 
     #[test]
     fn new() {
         let mut segment = Segment::new();
         segment.add_style(crate::core::style::Style::Bold);
-        segment.add_text("Hello, World!");
+        segment.add_text("a b c d");
 
-        assert_eq!(segment.render(None), "Hello, World!");
+        assert_eq!(segment.render(SegmentPadding::None, None), "a b c d");
+        assert_eq!(segment.render(SegmentPadding::Center(8), None), "a b c d ");
+        assert_eq!(segment.render(SegmentPadding::Left(8), None), "a b c d ");
+        assert_eq!(segment.render(SegmentPadding::Right(8), None), " a b c d");
         assert_eq!(
-            segment.render(Some(crate::core::color::storage::Storage::Bits24)),
-            "\u{1b}[1mHello, World!"
+            segment.render(
+                SegmentPadding::Center(9),
+                Some(crate::core::color::storage::Storage::Bits24)
+            ),
+            "\u{1b}[1m a b c d "
         );
     }
 }

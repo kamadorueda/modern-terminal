@@ -25,7 +25,7 @@ impl crate::core::render::Render for ColorPalette {
 
         for row in 0..(rows) {
             let mut segment = crate::core::segment::Segment::new();
-            segment.parts.reserve(columns);
+            segment.portions.reserve(columns);
 
             for column in 0..(columns) {
                 let col_r = (column as f64) / ((columns - 1) as f64);
