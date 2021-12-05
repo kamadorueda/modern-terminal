@@ -4,9 +4,9 @@ for rich text and beautiful formatting.
 Users of your command line applications are simply going to love it ❤️
 
 [![](https://img.shields.io/crates/v/modern-terminal?color=green)](
-  https://crates.io/crates/modern-terminal)
+  https://crates.io/crates/modern-terminal/0.6.0)
 [![](https://img.shields.io/docsrs/modern-terminal?color=green)](
-  https://docs.rs/modern-terminal)
+  https://docs.rs/modern-terminal/0.6.0)
 
 <!-- Modern Terminal can also render pretty tables,
 progress bars,
@@ -29,5 +29,5 @@ and more — out of the box. -->
 [COLOR_PALETTE]: ./examples/color_palette.svg
 [TEXT]: ./examples/text.svg
 --- -->
-[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/main/examples/color_palette.svg
-[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/main/examples/text.svg
+[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.6.0/examples/color_palette.svg
+[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.6.0/examples/text.svg
