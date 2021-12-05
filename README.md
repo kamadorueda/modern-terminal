@@ -21,13 +21,19 @@ and more — out of the box. -->
 
 ![][COLOR_PALETTE]
 
+## Table
+
+![][TABLE]
+
 ## Text
 
 ![][TEXT]
 
 <!-- ---
 [COLOR_PALETTE]: ./examples/color_palette.svg
+[TABLE]: ./examples/table.svg
 [TEXT]: ./examples/text.svg
 --- -->
 [COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/color_palette.svg
+[TABLE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/table.svg
 [TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/text.svg

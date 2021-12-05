@@ -17,18 +17,12 @@ pub struct Segment {
     pub portions: Vec<SegmentPortion>,
 }
 
-pub type RenderedSegments = Vec<String>;
+pub type RenderedSegment = String;
+pub type RenderedSegments = Vec<RenderedSegment>;
 
 impl Segment {
     pub fn new() -> Segment {
         Segment { portions: vec![] }
-    }
-
-    pub fn add_segment(
-        &mut self,
-        segment: &Segment,
-    ) {
-        self.portions.extend(segment.portions.clone());
     }
 
     pub fn add_text(
