@@ -1,5 +1,6 @@
 pub enum Size {
     Cells(usize),
+    Weight(f64),
 }
 
 pub struct Table {
@@ -12,13 +13,38 @@ impl crate::core::render::Render for Table {
         &self,
         options: &crate::core::render::Options,
     ) -> crate::core::segment::RenderedSegments {
+        let columns = match options.columns {
+            Some(columns) => columns,
+            None => crate::core::render::DEFAULT_COLUMNS,
+        };
+
         let mut rendered_segments = Vec::new();
 
+        let total_weight: f64 = self
+            .column_sizes
+            .iter()
+            .map(|column_size| match column_size {
+                Size::Weight(weight) => *weight,
+                _ => 0.0,
+            })
+            .sum();
+        let total_cells: usize = self
+            .column_sizes
+            .iter()
+            .map(|column_size| match column_size {
+                Size::Cells(cells) => *cells,
+                _ => 0,
+            })
+            .sum();
         let column_sizes: Vec<usize> = self
             .column_sizes
             .iter()
             .map(|column_size| match column_size {
                 Size::Cells(cells) => *cells,
+                Size::Weight(weight) => {
+                    ((columns as f64 - total_cells as f64).abs()
+                        * (weight / total_weight)) as usize
+                },
             })
             .collect();
 
