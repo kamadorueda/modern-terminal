@@ -5,9 +5,8 @@ pub enum TextAlignment {
 }
 
 pub struct Text {
-    pub align:  TextAlignment,
-    pub styles: Vec<crate::core::style::Style>,
-    pub text:   String,
+    pub align:    TextAlignment,
+    pub portions: Vec<crate::core::segment::SegmentPortion>,
 }
 
 impl crate::core::render::Render for Text {
@@ -21,13 +20,48 @@ impl crate::core::render::Render for Text {
         };
 
         let mut rendered_segments = Vec::new();
+        let mut spans: Vec<Vec<crate::core::segment::SegmentPortion>> =
+            vec![vec![]];
 
-        for line in wrap(&self.text, columns, options.rows) {
-            let mut segment = crate::core::segment::Segment::new();
-            for style in self.styles.iter() {
-                segment.add_style(style.clone());
+        for portion in self.portions.iter() {
+            spans.last_mut().unwrap().push(portion.clone());
+            match portion {
+                crate::core::segment::SegmentPortion::Text(_) => {
+                    spans.push(Vec::new());
+                }
+                _ => {}
             }
-            segment.add_text(&line);
+        }
+
+        let mut segments: Vec<crate::core::segment::Segment> =
+            vec![crate::core::segment::Segment::new()];
+
+        for span in spans.iter() {
+            for portion in span.iter() {
+                match portion {
+                    crate::core::segment::SegmentPortion::Style(style) => {
+                        segments.last_mut().unwrap().add_style(style.clone());
+                    }
+                    crate::core::segment::SegmentPortion::Text(text) => {
+                        let mut text = &text[..];
+                        while text.len() > columns {
+                            let clone = segments.last_mut().unwrap().clone();
+
+                            segments
+                                .last_mut()
+                                .unwrap()
+                                .add_text(&text[0..columns]);
+                            segments.push(clone);
+                            text = &text[columns..];
+                        }
+                        segments.last_mut().unwrap().add_text(&text);
+                    }
+                }
+            }
+        }
+
+        rendered_segments.reserve(segments.len());
+        for segment in segments.iter() {
             rendered_segments.push(segment.render(
                 match self.align {
                     TextAlignment::Center => {
@@ -45,47 +79,5 @@ impl crate::core::render::Render for Text {
         }
 
         rendered_segments
-    }
-}
-
-fn wrap(text: &str, columns: usize, rows: Option<usize>) -> Vec<String> {
-    let mut lines = Vec::new();
-
-    for line in &mut textwrap::wrap(text, columns) {
-        let line = String::from(match line {
-            std::borrow::Cow::Borrowed(line) => *line,
-            std::borrow::Cow::Owned(line) => line,
-        });
-        match rows {
-            Some(rows) => {
-                if lines.len() < rows {
-                    lines.push(line);
-                }
-            }
-            None => {
-                lines.push(line);
-            }
-        };
-    }
-
-    lines
-}
-
-#[cfg(test)]
-mod tests {
-    use super::wrap;
-
-    #[test]
-    fn test_wrap() {
-        let text = "0123456789 01234 56789 012";
-
-        assert_eq!(
-            wrap(text, 4, Some(7)),
-            vec!["0123", "4567", "89", "0123", "4", "5678", "9"],
-        );
-        assert_eq!(
-            wrap(text, 4, None),
-            vec!["0123", "4567", "89", "0123", "4", "5678", "9", "012"],
-        );
     }
 }

@@ -21,6 +21,11 @@ where
 
         Ok(())
     }
+
+    pub fn write(&mut self, buf: &[u8]) -> std::io::Result<()> {
+        self.writer.write(buf)?;
+        Ok(())
+    }
 }
 
 impl<'a, W> Console<'a, W>

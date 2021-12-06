@@ -3,9 +3,6 @@
   regex = "1"
   textwrap = "0.14"
 
-[dev-dependencies]
-  lipsum = "0.8"
-
 [package]
   authors = ["Kevin Amado <kamadorueda@gmail.com>"]
   description = "Library for rich text and beautiful formatting in the terminal"

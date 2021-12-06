@@ -5,7 +5,7 @@ use modern_terminal::{
         table::{Size, Table},
         text::{Text, TextAlignment},
     },
-    core::{console::Console, style::Style},
+    core::{console::Console, segment::SegmentPortion, style::Style},
 };
 
 fn main() -> std::io::Result<()> {
@@ -31,24 +31,31 @@ fn main() -> std::io::Result<()> {
 
 fn header(text: &str) -> Box<Text> {
     Box::new(Text {
-        align:  TextAlignment::Center,
-        text:   String::from(text),
-        styles: vec![Style::Bold, Style::Foreground("yellow".to_string())],
+        align:    TextAlignment::Center,
+        portions: vec![
+            SegmentPortion::Style(Style::Bold),
+            SegmentPortion::Style(Style::Foreground("yellow".to_string())),
+            SegmentPortion::Text(text.to_string()),
+        ],
     })
 }
 
 fn movie(text: &str) -> Box<Text> {
     Box::new(Text {
-        align:  TextAlignment::Center,
-        text:   String::from(text),
-        styles: vec![Style::Foreground("cyan".to_string())],
+        align:    TextAlignment::Center,
+        portions: vec![
+            SegmentPortion::Style(Style::Foreground("cyan".to_string())),
+            SegmentPortion::Text(text.to_string()),
+        ],
     })
 }
 
 fn rating(text: &str) -> Box<Text> {
     Box::new(Text {
-        align:  TextAlignment::Center,
-        text:   String::from(text),
-        styles: vec![Style::Foreground("bright_green".to_string())],
+        align:    TextAlignment::Center,
+        portions: vec![
+            SegmentPortion::Style(Style::Foreground("green".to_string())),
+            SegmentPortion::Text(text.to_string()),
+        ],
     })
 }
