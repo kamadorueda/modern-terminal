@@ -14,10 +14,10 @@ for building delightful interactions.
 
 Users of your command line applications are simply going to love it ❤️
 
-[![](https://img.shields.io/crates/v/modern-terminal?color=green)](
+[![](https://img.shields.io/badge/crates.io-0.7.0-green)](
   https://crates.io/crates/modern-terminal)
 [![](https://img.shields.io/docsrs/modern-terminal?color=green)](
-  https://docs.rs/modern-terminal/latest)
+  https://docs.rs/modern-terminal/0.7.0)
 
 <!-- Modern Terminal can also render pretty tables,
 progress bars,
@@ -45,6 +45,6 @@ and more — out of the box. -->
 [TABLE]: ./examples/table.svg
 [TEXT]: ./examples/text.svg
 --- -->
-[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/color_palette.svg
-[TABLE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/table.svg
-[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/text.svg
+[COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.7.0/examples/color_palette.svg
+[TABLE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.7.0/examples/table.svg
+[TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/0.7.0/examples/text.svg
