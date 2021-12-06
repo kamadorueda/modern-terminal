@@ -30,21 +30,29 @@ and more — out of the box. -->
 
 ## Color Palette
 
+- Source code: [here][COLOR_PALETTE_SRC]
+
 ![][COLOR_PALETTE]
 
 ## Table
+
+- Source code: [here][TABLE_SRC]
 
 ![][TABLE]
 
 ## Text
 
+- Source code: [here][TEXT_SRC]
+
 ![][TEXT]
 
-<!-- ---
-[COLOR_PALETTE]: ./examples/color_palette.svg
-[TABLE]: ./examples/table.svg
-[TEXT]: ./examples/text.svg
---- -->
+---
+
 [COLOR_PALETTE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/color_palette.svg
+[COLOR_PALETTE_SRC]: https://github.com/kamadorueda/modern-terminal/blob/latest/examples/color_palette.rs
+
 [TABLE]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/table.svg
+[TABLE_SRC]: https://github.com/kamadorueda/modern-terminal/blob/latest/examples/table.rs
+
 [TEXT]: https://raw.githubusercontent.com/kamadorueda/modern-terminal/latest/examples/text.svg
+[TEXT_SRC]: https://github.com/kamadorueda/modern-terminal/blob/latest/examples/table.rs
