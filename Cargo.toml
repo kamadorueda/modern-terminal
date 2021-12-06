@@ -15,4 +15,4 @@
   name = "modern-terminal"
   publish = false
   repository = "https://github.com/kamadorueda/modern-terminal"
-  version = "0.6.0"
+  version = "0.7.0"

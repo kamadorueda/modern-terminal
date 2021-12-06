@@ -14,7 +14,7 @@ for building delightful interactions.
 
 Users of your command line applications are simply going to love it ❤️
 
-[![](https://img.shields.io/crates/v/modern-terminal?color=green)](
+[![](https://img.shields.io/badge/crates.io-latest-green)](
   https://crates.io/crates/modern-terminal)
 [![](https://img.shields.io/docsrs/modern-terminal?color=green)](
   https://docs.rs/modern-terminal/latest)
