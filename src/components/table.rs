@@ -44,7 +44,7 @@ impl crate::core::render::Render for Table {
                 Size::Weight(weight) => {
                     ((columns as f64 - total_cells as f64).abs()
                         * (weight / total_weight)) as usize
-                },
+                }
             })
             .collect();
 
@@ -76,8 +76,7 @@ impl crate::core::render::Render for Table {
                             .last_mut()
                             .unwrap()
                             .push_str(&column_rendered_segments[index]);
-                    }
-                    else {
+                    } else {
                         rendered_segments.last_mut().unwrap().push_str(
                             &std::iter::repeat(" ")
                                 .take(column_sizes[columns_index])

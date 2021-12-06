@@ -94,8 +94,7 @@ impl Color {
                                 25 => 231,
                                 step => 231 + step,
                             }
-                        }
-                        else {
+                        } else {
                             (16.0
                                 + (5.0 * rn).round() * 36.0
                                 + (5.0 * gn).round() * 6.0
@@ -105,7 +104,7 @@ impl Color {
                         rgb:     None,
                         storage: crate::core::color::storage::Storage::Bits8,
                     })
-                },
+                }
                 None => None,
             },
             (
@@ -126,10 +125,7 @@ impl Color {
         }
     }
 
-    pub fn ansi_sgr(
-        &self,
-        foreground: bool,
-    ) -> Result<Vec<u8>, &Color> {
+    pub fn ansi_sgr(&self, foreground: bool) -> Result<Vec<u8>, &Color> {
         match self {
             Color {
                 storage: crate::core::color::storage::Storage::Bits1,

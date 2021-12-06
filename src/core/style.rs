@@ -16,8 +16,7 @@ impl Style {
         let sgr: Vec<String> = sgr.iter().map(u8::to_string).collect();
         if sgr.is_empty() {
             String::new()
-        }
-        else {
+        } else {
             format!("\u{1b}[{}m", sgr.join(";"))
         }
     }
@@ -36,13 +35,13 @@ impl Style {
                     }
                 }
                 vec![]
-            },
+            }
             Style::Bold => {
                 vec![1]
-            },
+            }
             Style::Dim => {
                 vec![2]
-            },
+            }
             Style::Foreground(color) => {
                 if let Ok(color) = crate::core::color::Color::new(color) {
                     if let Some(color) = color.to_storage(storage) {
@@ -52,10 +51,10 @@ impl Style {
                     }
                 }
                 vec![]
-            },
+            }
             Style::None => {
                 vec![0]
-            },
+            }
         }
     }
 }

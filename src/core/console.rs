@@ -10,10 +10,7 @@ impl<'a, W> Console<'a, W>
 where
     W: std::io::Write,
 {
-    pub fn render<R>(
-        &mut self,
-        component: &R,
-    ) -> std::io::Result<()>
+    pub fn render<R>(&mut self, component: &R) -> std::io::Result<()>
     where
         R: crate::core::render::Render,
     {
@@ -70,11 +67,9 @@ fn detect_storage() -> Option<crate::core::color::storage::Storage> {
         if let Some((_, term)) = term.trim().to_lowercase().rsplit_once("-") {
             if term == "dumb" || term == "unknown" {
                 return None;
-            }
-            else if term == "16color" {
+            } else if term == "16color" {
                 return Some(crate::core::color::storage::Storage::Bits4);
-            }
-            else if term == "256color" {
+            } else if term == "256color" {
                 return Some(crate::core::color::storage::Storage::Bits8);
             }
         }
@@ -108,8 +103,7 @@ where
         && size.ws_row > 0
     {
         (size.ws_col.into(), size.ws_row.into())
-    }
-    else {
+    } else {
         (
             crate::core::render::DEFAULT_COLUMNS,
             crate::core::render::DEFAULT_ROWS,

@@ -32,13 +32,13 @@ impl crate::core::render::Render for Text {
                 match self.align {
                     TextAlignment::Center => {
                         crate::core::segment::SegmentPadding::Center(columns)
-                    },
+                    }
                     TextAlignment::Left => {
                         crate::core::segment::SegmentPadding::Left(columns)
-                    },
+                    }
                     TextAlignment::Right => {
                         crate::core::segment::SegmentPadding::Right(columns)
-                    },
+                    }
                 },
                 options.storage,
             ));
@@ -48,11 +48,7 @@ impl crate::core::render::Render for Text {
     }
 }
 
-fn wrap(
-    text: &str,
-    columns: usize,
-    rows: Option<usize>,
-) -> Vec<String> {
+fn wrap(text: &str, columns: usize, rows: Option<usize>) -> Vec<String> {
     let mut lines = Vec::new();
 
     for line in &mut textwrap::wrap(text, columns) {
@@ -65,10 +61,10 @@ fn wrap(
                 if lines.len() < rows {
                     lines.push(line);
                 }
-            },
+            }
             None => {
                 lines.push(line);
-            },
+            }
         };
     }
 
@@ -83,11 +79,13 @@ mod tests {
     fn test_wrap() {
         let text = "0123456789 01234 56789 012";
 
-        assert_eq!(wrap(text, 4, Some(7)), vec![
-            "0123", "4567", "89", "0123", "4", "5678", "9"
-        ],);
-        assert_eq!(wrap(text, 4, None), vec![
-            "0123", "4567", "89", "0123", "4", "5678", "9", "012"
-        ],);
+        assert_eq!(
+            wrap(text, 4, Some(7)),
+            vec!["0123", "4567", "89", "0123", "4", "5678", "9"],
+        );
+        assert_eq!(
+            wrap(text, 4, None),
+            vec!["0123", "4567", "89", "0123", "4", "5678", "9", "012"],
+        );
     }
 }

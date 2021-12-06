@@ -25,17 +25,11 @@ impl Segment {
         Segment { portions: vec![] }
     }
 
-    pub fn add_text(
-        &mut self,
-        text: &str,
-    ) {
+    pub fn add_text(&mut self, text: &str) {
         self.portions.push(SegmentPortion::Text(String::from(text)));
     }
 
-    pub fn add_style(
-        &mut self,
-        style: crate::core::style::Style,
-    ) {
+    pub fn add_style(&mut self, style: crate::core::style::Style) {
         self.portions.push(SegmentPortion::Style(style));
     }
 
@@ -62,27 +56,27 @@ impl Segment {
                         (desired_length - rendered_length) / 2,
                     ));
                 };
-            },
+            }
             SegmentPadding::Right(desired_length) => {
                 if desired_length > rendered_length {
                     rendered.push_str(&whitespace(
                         desired_length - rendered_length,
                     ));
                 }
-            },
-            _ => {},
+            }
+            _ => {}
         };
 
         for portion in self.portions.iter() {
             match portion {
                 SegmentPortion::Text(text) => {
                     rendered.push_str(&text);
-                },
+                }
                 SegmentPortion::Style(style) => match storage {
                     Some(storage) => {
                         rendered.push_str(&style.ansi_escape_code(storage));
-                    },
-                    None => {},
+                    }
+                    None => {}
                 },
             }
         }
@@ -101,7 +95,7 @@ impl Segment {
                         desired_length - rendered_length,
                     ));
                 }
-            },
+            }
             SegmentPadding::Center(desired_length) => {
                 if desired_length > rendered_length {
                     rendered.push_str(&whitespace(
@@ -110,8 +104,8 @@ impl Segment {
                             - (desired_length - rendered_length) / 2,
                     ));
                 }
-            },
-            _ => {},
+            }
+            _ => {}
         }
 
         rendered
