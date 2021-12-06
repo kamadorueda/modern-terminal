@@ -12,19 +12,22 @@ for example in examples/*.rs; do
 
   cargo build --example "${example}" --release
 
-  asciinema rec \
-    --command="
-      echo $ cargo run --example ${example}
-      echo
-      target/release/examples/${example}
-      echo
-      echo $ cat examples/${example}.rs
-      echo
-      bat --paging=never --style plain,numbers examples/${example}.rs
-      echo
-    " \
-    --overwrite \
-    "examples/${example}.cast"
+  gnome-terminal --wait --zoom=0.5 -- "${SHELL}" -c "
+    resize -s 20 80
+    asciinema rec \\
+      --command='
+        echo $ cargo run --example ${example}
+        echo
+        target/release/examples/${example}
+        echo
+        echo $ cat examples/${example}.rs
+        echo
+        bat --paging=never --style plain,numbers examples/${example}.rs
+        echo
+      ' \\
+      --overwrite \\
+      examples/${example}.cast
+  "
   ./examples/node_modules/.bin/svg-term \
     --at 10000 \
     --no-cursor \
