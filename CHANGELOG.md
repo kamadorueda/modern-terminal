@@ -7,11 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - YYYY-MM-DD
 ### Added
+- Enumeration `core::style::Style`
+  to support:
+  `Blink`,
+  `BlinkFast`,
+  `Conceal`,
+  `Encircle`,
+  `Frame`,
+  `Italic`,
+  `Overline`,
+  `Reverse`,
+  `Strike`,
+  `Underline`,
+  `UnderlineMore` styles
+  in top of the existing `Bold`,
+  `Foreground` color,
+  and `Background` color
 - Enumeration `components::table::Size::Weight(f64)`
   to support distributing
   the console width
   not covered by `components::table::Size::Cells(usize)`
   into weighted sections
+### Changed
+- Module `components::text`
+  to support mixing multiple colors
+  and styles
+  in a single component.
 ## [0.7.0] - 2021-12-05
 ### Added
 - Table component
