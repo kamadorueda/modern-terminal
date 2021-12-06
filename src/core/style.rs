@@ -1,10 +1,21 @@
 #[derive(Clone, Debug)]
 pub enum Style {
     Background(String),
+    Blink,
+    BlinkFast,
     Bold,
+    Conceal,
     Dim,
+    Encircle,
+    Frame,
     Foreground(String),
+    Italic,
     None,
+    Overline,
+    Reverse,
+    Strike,
+    Underline,
+    UnderlineMore,
 }
 
 impl Style {
@@ -36,11 +47,23 @@ impl Style {
                 }
                 vec![]
             }
+            Style::Blink => {
+                vec![5]
+            }
+            Style::BlinkFast => {
+                vec![6]
+            }
             Style::Bold => {
                 vec![1]
             }
+            Style::Conceal => {
+                vec![8]
+            }
             Style::Dim => {
                 vec![2]
+            }
+            Style::Encircle => {
+                vec![52]
             }
             Style::Foreground(color) => {
                 if let Ok(color) = crate::core::color::Color::new(color) {
@@ -52,8 +75,29 @@ impl Style {
                 }
                 vec![]
             }
+            Style::Frame => {
+                vec![51]
+            }
+            Style::Italic => {
+                vec![3]
+            }
             Style::None => {
                 vec![0]
+            }
+            Style::Overline => {
+                vec![53]
+            }
+            Style::Reverse => {
+                vec![7]
+            }
+            Style::Strike => {
+                vec![9]
+            }
+            Style::Underline => {
+                vec![4]
+            }
+            Style::UnderlineMore => {
+                vec![21]
             }
         }
     }
