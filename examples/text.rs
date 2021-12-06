@@ -130,6 +130,8 @@ fn main() -> std::io::Result<()> {
         portions: vec![
             SegmentPortion::Style(Style::Reverse),
             SegmentPortion::Text("Reverse".to_string()),
+            SegmentPortion::Style(Style::None),
+            SegmentPortion::Text(" ".to_string()),
         ],
     })?;
     console.render(&Text {
@@ -146,6 +148,8 @@ fn main() -> std::io::Result<()> {
         portions: vec![
             SegmentPortion::Style(Style::Underline),
             SegmentPortion::Text("Underline".to_string()),
+            SegmentPortion::Style(Style::None),
+            SegmentPortion::Text(" ".to_string()),
         ],
     })?;
     console.render(&Text {

@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the console width
   not covered by `components::table::Size::Cells(usize)`
   into weighted sections
+- Function `core::console::Console::newline`
+  to print a new line to the wrapped writer
 ### Changed
 - Module `components::text`
   to support mixing multiple colors

@@ -16,14 +16,14 @@ where
     {
         for segment in component.render(&self.options).iter() {
             self.writer.write(segment.as_bytes())?;
-            self.writer.write(b"\n")?;
+            self.newline()?;
         }
 
         Ok(())
     }
 
-    pub fn write(&mut self, buf: &[u8]) -> std::io::Result<()> {
-        self.writer.write(buf)?;
+    pub fn newline(&mut self) -> std::io::Result<()> {
+        self.writer.write(&[10])?;
         Ok(())
     }
 }
