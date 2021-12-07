@@ -64,8 +64,12 @@ impl crate::core::render::Render for Table {
 
             let mut index: usize = 0;
             let mut done: usize = 0;
+            let required: usize = columns_rendered_segments
+                .iter()
+                .map(|c| if c.len() > 0 { 1 } else { 0 })
+                .sum();
 
-            while done < columns_rendered_segments.len() {
+            while done < required {
                 rendered_segments.push(String::new());
 
                 for (columns_index, column_rendered_segments) in

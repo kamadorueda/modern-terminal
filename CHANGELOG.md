@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to support mixing multiple colors
   and styles
   in a single component.
+### Fixed
+- Correctly render tables with no rows
 ## [0.7.0] - 2021-12-05
 ### Added
 - Table component
